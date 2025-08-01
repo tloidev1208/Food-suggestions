@@ -1,12 +1,13 @@
-const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
 const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Food AI API",
+      title: "Food & Recipe API",
       version: "1.0.0",
+      description: "API cho nhận diện nguyên liệu và gợi ý món ăn",
     },
     servers: [
       {
@@ -14,11 +15,13 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["./routes/*.js"], // ✅ Quét tất cả các file route
 };
 
-const swaggerDocs = swaggerJsDoc(options);
+const swaggerSpec = swaggerJsdoc(options);
 
-module.exports = (app) => {
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-};
+function swaggerDocs(app) {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
+
+module.exports = swaggerDocs;

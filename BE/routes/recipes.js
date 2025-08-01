@@ -1,15 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const OpenAI = require("openai");
 
-const GEMINI_API_KEY = "AIzaSyBtv-BDOSnUrlNxgzh3ajhOK7hWAHNWjJ4"; // thay bằng key của bạn
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const openai = new OpenAI({
+  apiKey: "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", // 🔐 Thay bằng OpenAI API Key của bạn
+});
 
 /**
  * @swagger
  * /api/recipes/food-suggest:
  *   post:
- *     summary: Gợi ý công thức món ăn bằng Google Gemini dựa trên nguyên liệu
+ *     summary: Gợi ý công thức món ăn bằng OpenAI dựa trên nguyên liệu
  *     tags: [Recipes]
  *     requestBody:
  *       required: true
@@ -25,7 +26,7 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
  *                 example: ["tomato", "cucumber", "egg"]
  *     responses:
  *       200:
- *         description: Danh sách món ăn gợi ý từ Gemini
+ *         description: Danh sách món ăn gợi ý từ OpenAI
  */
 router.post("/food-suggest", async (req, res) => {
   const { ingredients } = req.body;
@@ -35,24 +36,24 @@ router.post("/food-suggest", async (req, res) => {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    // hoặc: { model: "gemini-1.5-pro" }
-
-   const prompt = `Tôi có các nguyên liệu: ${allIngredients.join(", ")}.
+    const prompt = `Tôi có các nguyên liệu: ${ingredients.join(", ")}.
 Hãy gợi ý cho tôi 4 món ăn ngon, trả về dưới dạng JSON:
 [
   {
     "name": "Tên món",
     "ingredients": ["nguyên liệu1", "nguyên liệu2"],
     "instructions": "Cách nấu ngắn gọn",
-    "image": "Link ảnh thật từ Google hoặc Wikipedia"
+    "image": "Link ảnh thật từ Wikimedia hoặc Pixabay"
   }
 ]`;
 
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 1.0,
+    });
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    let text = completion.choices[0].message.content;
 
     let cleanText = text.replace(/```json|```/g, "").trim();
 
@@ -60,13 +61,16 @@ Hãy gợi ý cho tôi 4 món ăn ngon, trả về dưới dạng JSON:
     try {
       recipes = JSON.parse(cleanText);
     } catch (err) {
-      recipes = [{ note: "Gemini trả về không phải JSON chuẩn", raw: text }];
+      recipes = [{ note: "OpenAI trả về không phải JSON chuẩn", raw: text }];
     }
 
     res.json({ status: "success", recipes });
   } catch (error) {
-    console.error("Gemini Error:", JSON.stringify(error, null, 2));
-    res.status(500).json({ error: "Lỗi khi gọi Gemini API" });
+    console.error("OpenAI Error:", error);
+    res.status(500).json({
+      error: "Lỗi khi gọi OpenAI API",
+      details: error.message,
+    });
   }
 });
 
