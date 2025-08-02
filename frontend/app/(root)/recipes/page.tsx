@@ -15,7 +15,7 @@ export default function Home() {
       </header>
 
       {/* Upload area */}
-      <section className="mt-12 w-full max-w-xl bg-white p-6 rounded-xl shadow-md border">
+      <section className="mt-12 w-full max-w-7xl bg-white p-6 rounded-xl shadow-md border">
         <div className="flex items-center gap-2 mb-4">
           <ImageUp className="text-blue-500" />
           <h2 className="text-xl font-semibold text-gray-800">Tải lên nguyên liệu của bạn</h2>

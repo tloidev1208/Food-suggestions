@@ -10,7 +10,7 @@ const HomeHeader = () => {
     >
       <div className="bg-black/50 absolute inset-0" />
       <div className="relative z-10 text-center text-white px-4">
-        <h1 className="text-4xl md:text-7xl font-bold mb-4">FOOD AI</h1>
+        <h1 className="text-4xl md:text-7xl font-bold mb-4">SnapToEat</h1>
         <p className="text-lg md:text-2xl mb-6">
           Biến ảnh thành công thức nấu ăn ngon với AI
         </p>

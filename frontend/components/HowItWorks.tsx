@@ -25,7 +25,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <div className="bg-white py-16 px-4 md:px-8 lg:px-16 text-black">
+    <div className="bg-white py-16 px-4 md:px-8 lg:px-16 text-black max-w-7xl mx-auto">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-black-700">
         Ống kính công thức hoạt động như thế nào?
       </h2>
@@ -42,7 +42,7 @@ export default function HowItWorks() {
               index % 2 !== 0 ? "md:flex-row-reverse" : ""
             }`}
           >
-            <div className="md:w-1/2">
+            <div className="md:w-1/2 transform hover:-translate-y-1 transition duration-200 ease-in-out">
               <Image
                 src={step.image}
                 alt={step.title}
