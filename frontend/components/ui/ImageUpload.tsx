@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SuggestionResult from "@/components/Result";
+import Image from "next/image";
 
 type Recipe = {
   name: string;
@@ -55,8 +56,12 @@ export default function ImageUploader() {
         ingredients: data.ingredients,
         recipes: data.recipes,
       });
-    } catch (err: any) {
-      alert("Error: " + err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Lỗi không xác định");
+      }
     } finally {
       setLoading(false);
     }
@@ -78,9 +83,11 @@ export default function ImageUploader() {
             key={index}
             className="w-full aspect-square border rounded overflow-hidden"
           >
-            <img
+            <Image
               src={src}
               alt={`Preview ${index + 1}`}
+              width={400} // đặt kích thước phù hợp theo layout
+              height={300}
               className="object-cover w-full h-full"
             />
           </div>
@@ -90,7 +97,9 @@ export default function ImageUploader() {
       <Button onClick={handleUpload} disabled={images.length === 0 || loading}>
         {loading ? "Đang xử lý..." : "Gợi ý món ăn"}
       </Button>
-      <div className="flex flex-col items-center gap-4 w-full max-w-2xl mx-auto p-4">{result && <SuggestionResult result={result} />}</div>
+      <div className="flex flex-col items-center gap-4 w-full max-w-2xl mx-auto p-4">
+        {result && <SuggestionResult result={result} />}
+      </div>
     </div>
   );
 }

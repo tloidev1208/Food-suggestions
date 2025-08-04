@@ -37,11 +37,15 @@ const handleLogin = async () => {
 
     alert("Đăng nhập thành công!");
     router.push("/");
-  } catch (err: any) {
-    alert(err.message || "Lỗi không xác định");
-  } finally {
-    setLoading(false);
+ } catch (err: unknown) {
+  if (err instanceof Error) {
+    alert(err.message);
+  } else {
+    alert("Lỗi không xác định");
   }
+} finally {
+  setLoading(false);
+}
 };
 
 
