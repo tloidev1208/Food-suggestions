@@ -1,4 +1,5 @@
 import ImageUploader from "@/components/ui/ImageUpload";
+import Worksteps from "@/components/Worksteps";
 import { ImageUp } from "lucide-react";
 
 export default function Home() {
@@ -22,6 +23,9 @@ export default function Home() {
         </div>
         <ImageUploader />
       </section>
+      <div>
+        <Worksteps />
+      </div>
     </div>
   );
 }

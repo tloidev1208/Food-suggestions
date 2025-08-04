@@ -40,7 +40,7 @@ export default function ImageUploader() {
     try {
       setLoading(true);
       const res = await fetch(
-        "http://localhost:5000/api/food-recipes/suggest",
+        `${process.env.NEXT_PUBLIC_API_URL}/food-recipes/suggest`,
         {
           method: "POST",
           body: formData,
