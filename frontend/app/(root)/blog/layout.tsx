@@ -1,10 +1,9 @@
-
 import { ReactNode } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <main className="px-4 py-12 bg-gray-100">
-      <div className="">
+    <main className="py-12 px-0 sm:px-4 bg-gray-100">
+      <div>
         {children}
       </div>
     </main>

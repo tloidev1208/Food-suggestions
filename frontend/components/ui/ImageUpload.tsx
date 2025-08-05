@@ -94,7 +94,11 @@ export default function ImageUploader() {
         ))}
       </div>
 
-      <Button onClick={handleUpload} disabled={images.length === 0 || loading}>
+      <Button
+        onClick={handleUpload}
+        disabled={images.length === 0 || loading}
+        className="w-full"
+      >
         {loading ? "Đang xử lý..." : "Gợi ý món ăn"}
       </Button>
       <div className="flex flex-col items-center gap-4 w-full max-w-2xl mx-auto p-4">
