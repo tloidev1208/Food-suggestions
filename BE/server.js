@@ -1,3 +1,5 @@
+require("dotenv").config(); // Thêm dòng này ở đầu file
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -14,7 +16,7 @@ const postRoutes = require("./routes/post");
 const mongoose = require("mongoose");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; // Cho phép cấu hình PORT qua env
 app.use(cors());
 // Middleware
 
@@ -22,7 +24,7 @@ app.use(bodyParser.json());
 
 // MongoDB Connect
 mongoose
-  .connect("mongodb://127.0.0.1:27017/food_project", {
+  .connect(process.env.MONGODB_URI, { // Sử dụng biến môi trường
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -43,6 +45,6 @@ app.use("/api/posts", postRoutes);
 swaggerDocs(app);
 
 app.listen(PORT, () => {
-  console.log(`✅ Server chạy tại http://localhost:${PORT}`);
-  console.log(`📄 Swagger Docs tại http://localhost:${PORT}/api-docs`);
+  console.log(`✅ Server chạy tại ${process.env.API_BASE_URL || `http://localhost:${PORT}`}`);
+  console.log(`📄 Swagger Docs tại ${process.env.API_BASE_URL || `http://localhost:${PORT}`}/api-docs`);
 });

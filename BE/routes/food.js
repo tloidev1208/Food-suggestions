@@ -1,3 +1,5 @@
+require("dotenv").config(); 
+
 const express = require("express");
 const axios = require("axios");
 const multer = require("multer");
@@ -6,9 +8,9 @@ const cloudinary = require("../config/cloudinary");
 const router = express.Router();
 
 // Clarifai Config
-const CLARIFAI_API_KEY = "1701be23056c4560b179b82ad0767d66";
-const CLARIFAI_MODEL_ID = "food-item-recognition";
-const CLARIFAI_MODEL_VERSION = "1d5fd481e0cf4826aa72ec3ff049e044";
+const CLARIFAI_API_KEY = process.env.CLARIFAI_API_KEY;
+const CLARIFAI_MODEL_ID = process.env.CLARIFAI_MODEL_ID;
+const CLARIFAI_MODEL_VERSION = process.env.CLARIFAI_MODEL_VERSION;
 
 // Multer Config (lưu file tạm)
 const storage = multer.diskStorage({});

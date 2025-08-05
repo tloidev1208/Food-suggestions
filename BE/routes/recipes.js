@@ -1,9 +1,12 @@
+require("dotenv").config(); 
+
 const express = require("express");
 const router = express.Router();
 const OpenAI = require("openai");
 
+// OpenAI Config
 const openai = new OpenAI({
-  apiKey: "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", // 🔐 Thay bằng OpenAI API Key của bạn
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 /**

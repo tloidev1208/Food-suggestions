@@ -1,3 +1,5 @@
+require("dotenv").config(); // Thêm dòng này ở đầu file
+
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -11,7 +13,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: process.env.API_BASE_URL || "http://localhost:5000",
       },
     ],
   },

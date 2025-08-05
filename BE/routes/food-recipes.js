@@ -1,3 +1,5 @@
+require("dotenv").config(); 
+
 const express = require("express");
 const axios = require("axios");
 const multer = require("multer");
@@ -7,14 +9,13 @@ const { OpenAI } = require("openai");
 const router = express.Router();
 
 // Clarifai Config
-const CLARIFAI_API_KEY = "1701be23056c4560b179b82ad0767d66";
-const CLARIFAI_MODEL_ID = "food-item-recognition";
-const CLARIFAI_MODEL_VERSION = "1d5fd481e0cf4826aa72ec3ff049e044";
+const CLARIFAI_API_KEY = process.env.CLARIFAI_API_KEY;
+const CLARIFAI_MODEL_ID = process.env.CLARIFAI_MODEL_ID;
+const CLARIFAI_MODEL_VERSION = process.env.CLARIFAI_MODEL_VERSION;
 
 // OpenAI Config
 const openai = new OpenAI({
-  apiKey:
-    "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", // 🔐 Thay bằng OpenAI API Key của bạn
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 // Multer Config
