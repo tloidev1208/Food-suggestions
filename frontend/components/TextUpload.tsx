@@ -79,7 +79,7 @@ export default function TextUpload() {
 
   return (
     <div className="max-w-xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Gợi ý món ăn từ nguyên liệu</h1>
+      <h1 className="text-2xl font-bold text-center">Thêm vào một nguyên liệu</h1>
 
       <div className="flex space-x-2">
         <Input
