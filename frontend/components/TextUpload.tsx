@@ -53,7 +53,7 @@ export default function TextUpload() {
     setRecipes([]);
 
     try {
-      const res = await fetch('http://localhost:5000/api/recipes/food-suggest', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/food-recipes/suggest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ingredients }),
