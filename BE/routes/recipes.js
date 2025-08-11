@@ -40,13 +40,27 @@ router.post("/food-suggest", async (req, res) => {
 
   try {
     const prompt = `Tôi có các nguyên liệu: ${ingredients.join(", ")}.
-Hãy gợi ý cho tôi 4 món ăn ngon, trả về dưới dạng JSON:
+Hãy gợi ý cho tôi 4 món ăn ngon có thể nấu từ các nguyên liệu trên.
+
+Yêu cầu:
+- Chỉ trả về kết quả dưới dạng JSON hợp lệ
+- Không trả thêm giải thích hay ký tự thừa
+- Nếu không tìm được ảnh thực tế, để chuỗi rỗng ""
+
+Mỗi món ăn có cấu trúc:
 [
   {
     "name": "Tên món",
     "ingredients": ["nguyên liệu1", "nguyên liệu2"],
-    "instructions": "Cách nấu ngắn gọn",
-    "image": "Link ảnh thật từ Wikimedia hoặc Pixabay"
+    "instructions": "Cách nấu ngắn gọn, tối đa 3 câu",
+    "image": "Link ảnh thực tế (jpg, png hoặc webp) từ Website trên Google",
+    "cook_time": "Thời gian nấu (phút hoặc giờ)",
+    "nutrition": {
+      "calories": "Số kcal",
+      "protein": "Số gam protein",
+      "fat": "Số gam chất béo",
+      "carbs": "Số gam tinh bột"
+    }
   }
 ]`;
 

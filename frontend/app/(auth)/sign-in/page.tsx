@@ -80,7 +80,7 @@ const handleLogin = async () => {
           <button
             onClick={handleLogin}
             disabled={loading}
-            className={`w-full py-3 bg-green-600 text-white font-semibold rounded-lg transition duration-300 hover:bg-green-700 ${
+            className={`w-full py-3 bg-red-500 text-white font-semibold rounded-lg transition duration-300 hover:bg-red-600 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -89,7 +89,7 @@ const handleLogin = async () => {
 
           <p className="mt-4 text-sm text-gray-500 text-center">
             Bạn chưa có tài khoản?{" "}
-            <Link href="/sign-up" className="text-green-600 hover:underline">
+            <Link href="/sign-up" className="text-red-500 hover:underline">
               Đăng ký
             </Link>
           </p>

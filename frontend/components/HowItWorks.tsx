@@ -64,7 +64,7 @@ export default function HowItWorks() {
       <div className="mt-16 text-center">
         <Link href="/recipes">
           <Button
-            className="text-lg px-10 py-4 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-md 
+            className="text-lg px-10 py-4 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md 
              transform hover:-translate-y-1 transition duration-200 ease-in-out cursor-pointer"
           >
             Khám phá ngay

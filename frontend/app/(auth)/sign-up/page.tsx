@@ -28,12 +28,12 @@ const Signup = () => {
                         placeholder="Nhập mật khẩu của bạn"
                         className="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-green-500"
                     />
-                    <button className="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300">
+                    <button className="w-full py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300">
                         Tiếp tục
                     </button>
 
                     <p className="mt-4 text-sm text-gray-500 text-center">
-                        Bạn đã có tài khoản? <Link href="/sign-in" className="text-green-600 hover:underline">Đăng nhập</Link>
+                        Bạn đã có tài khoản? <Link href="/sign-in" className="text-red-500 hover:underline">Đăng nhập</Link>
                     </p>
                 </div>
             </div>

@@ -22,7 +22,7 @@ export default function RecentlyJoined() {
   }, []);
 
   return (
-    <div className="p-4 mt-4 w-80 border rounded-lg bg-white shadow-md">
+    <div className="p-4 mt-4 w-80">
       <h2 className="text-lg font-semibold mb-4">Mới tham gia</h2>
       <ul className="space-y-4">
         {users.map((user) => (

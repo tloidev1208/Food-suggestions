@@ -1,4 +1,4 @@
-require("dotenv").config(); 
+require("dotenv").config();
 
 const express = require("express");
 const axios = require("axios");
@@ -50,8 +50,6 @@ router.post("/suggest", upload.array("images", 3), async (req, res) => {
     }
 
     let allIngredients = [];
-
-    // Nhận diện nguyên liệu từ ảnh
     for (const file of files) {
       const fileData = fs.readFileSync(file.path);
       const base64 = fileData.toString("base64");
@@ -70,10 +68,8 @@ router.post("/suggest", upload.array("images", 3), async (req, res) => {
     }
 
     allIngredients = [...new Set(allIngredients)];
-
-    // Gọi OpenAI để gợi ý món ăn
     const prompt = `Tôi có các nguyên liệu: ${allIngredients.join(", ")}.
-Hãy gợi ý cho tôi 4 món ăn ngon có thể nấu từ các nguyên liệu đó.
+Hãy gợi ý cho tôi 4 món ăn ngon có thể nấu từ cá.  
 Trả về kết quả dưới dạng JSON, mỗi món ăn có dạng:
 
 [
@@ -81,7 +77,14 @@ Trả về kết quả dưới dạng JSON, mỗi món ăn có dạng:
     "name": "Tên món",
     "ingredients": ["nguyên liệu1", "nguyên liệu2"],
     "instructions": "Cách nấu ngắn gọn, tối đa 3 câu",
-    "image": "Link ảnh thực tế (jpg, png hoặc webp) từ Website trên google KHÔNG để trống"
+    "image": "Link ảnh thực tế (jpg, png hoặc webp) từ Website trên Google KHÔNG để trống",
+    "cook_time": "Thời gian nấu (phút hoặc giờ)",
+    "nutrition": {
+      "calories": "Số kcal",
+      "protein": "Số gam protein",
+      "fat": "Số gam chất béo",
+      "carbs": "Số gam tinh bột"
+    }
   }
 ]
 

@@ -10,7 +10,7 @@ export default function Worksteps() {
       icon: '🏥',
       title: 'AI phân tích',
       desc: `AI tiên tiến của chúng tôi sẽ phân tích hình ảnh để nhận diện nguyên liệu, phương pháp nấu và cách trình bày.`,
-      color: 'bg-green-600'
+      color: 'bg-red-500'
     },
     {
       icon: '🍽️',

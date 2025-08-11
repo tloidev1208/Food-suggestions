@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import TextUpload from "@/components/TextUpload";
-import ImageUploader from "@/components/ui/ImageUpload";
+import { useState } from "react";
+import TextUpload from "@/components/TextUpLoad/TextUpload";
+import ImageUploader from "@/components/ImageUploader";
 import Worksteps from "@/components/Worksteps";
-import { ImageUp } from "lucide-react";
+import { ImageUp, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -27,13 +27,19 @@ export default function Home() {
       <section className="mt-12 w-full max-w-7xl bg-white p-6 rounded-xl shadow-md border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <ImageUp className="text-blue-500" />
+            {showTextUpload ? (
+              <Type className="text-blue-500" />
+            ) : (
+              <ImageUp className="text-blue-500" />
+            )}
             <h2 className="text-xl font-semibold text-gray-800">
-              {showTextUpload ? "Nhập nguyên liệu bằng văn bản" : "Tải lên nguyên liệu của bạn"}
+              {showTextUpload
+                ? "Nhập tên nguyên liệu"
+                : "Tải lên ảnh nguyên liệu"}
             </h2>
           </div>
           <Button
-          className='bg-green-500 text-white hover:bg-green-600 hover:text-white cursor-pointer'
+            className="bg-gray-500 text-white hover:bg-gray-600 hover:text-white cursor-pointer"
             variant="outline"
             size="sm"
             onClick={() => setShowTextUpload((prev) => !prev)}
@@ -42,9 +48,7 @@ export default function Home() {
           </Button>
         </div>
 
-        <div>
-          {showTextUpload ? <TextUpload /> : <ImageUploader />}
-        </div>
+        <div>{showTextUpload ? <TextUpload /> : <ImageUploader />}</div>
       </section>
 
       <div>
