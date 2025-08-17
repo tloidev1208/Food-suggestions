@@ -23,8 +23,8 @@ const Header = () => {
       <div className="relative flex justify-between items-center max-w-7xl mx-auto px-4">
         {/* Logo bên trái */}
         <Link href="/" className="text-3xl font-bold z-20">
-          <span className="text-gray-900">🍜SnapTo</span>
-          <span className="text-red-500">Eat.</span>
+          <span className="text-gray-900">Nutri</span>
+          <span className="text-red-500">AI.</span>
         </Link>
         <button
           className="lg:hidden z-20"
@@ -65,15 +65,15 @@ const Header = () => {
             </button>
             {serviceOpen && (
               <div
-                className="absolute left-0 top-full mt-2 bg-white border rounded shadow-lg min-w-[200px] z-20"
+                className="absolute left-0 top-full mt-2 bg-white border rounded shadow-lg min-w-[220px] z-20"
                 onMouseLeave={() => setServiceOpen(false)}
               >
                 <Link
-                  href="/recipes"
+                  href="/services/recipes"
                   className="block px-4 py-2 hover:bg-gray-100"
                   onClick={() => setServiceOpen(false)}
                 >
-                  Nhận diện món ăn
+                  🍽️Nhận diện món ăn
                 </Link>
                 <hr className="border-gray-200" />
                 <Link
@@ -81,23 +81,23 @@ const Header = () => {
                   className="block px-4 py-2 hover:bg-gray-100"
                   onClick={() => setServiceOpen(false)}
                 >
-                  Phân tích món ăn
+                  📊Phân tích món ăn
                 </Link>
                  <hr className="border-gray-200" />
                 <Link
-                  href="/services/tu-van-dinh-duong"
+                  href="/services/nutrition"
                   className="block px-4 py-2 hover:bg-gray-100"
                   onClick={() => setServiceOpen(false)}
                 >
-                  Tư vấn dinh dưỡng
+                  🥦Tư vấn dinh dưỡng
                 </Link>
                  <hr className="border-gray-200" />
                 <Link
-                  href="/meal"
+                  href="/services/meal"
                   className="block px-4 py-2 hover:bg-gray-100"
                   onClick={() => setServiceOpen(false)}
                 >
-                  Lập kế hoạch bữa ăn
+                  📅Lập kế hoạch bữa ăn
                 </Link>
               </div>
             )}
@@ -111,12 +111,12 @@ const Header = () => {
             Blog
           </Link>
           <Link
-            href="/contact"
+            href="services/contact"
             className={`text-lg font-normal hover:text-red-500 ${
               pathname.startsWith("/contact") ? "text-red-500 font-bold  " : ""
             }`}
           >
-            Về chúng tôi
+            Liên hệ
           </Link>
         </div>
 

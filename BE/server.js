@@ -16,6 +16,8 @@ const postRoutes = require("./routes/post");
 const mongoose = require("mongoose");
 const imageSearchRouter = require("./routes/imageSearch");
 const mealPlannerRoutes = require("./routes/mealPlanner");
+const nutritionRoutes = require("./routes/nutritionAdvice");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000; // Cho phép cấu hình PORT qua env
@@ -44,6 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/", imageSearchRouter);
 app.use("/api/recipes", mealPlannerRoutes);
+app.use("/api/recipes", nutritionRoutes);
 
 // Swagger Docs
 swaggerDocs(app);

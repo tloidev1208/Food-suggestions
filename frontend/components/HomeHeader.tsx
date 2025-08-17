@@ -16,12 +16,10 @@ export default function HomeHeader() {
             ENJOY YOUR <span className="text-red-500">DELICIOUS</span> FOOD
           </h1>
           <p className="text-gray-600 max-w-md">
-            Điều duy nhất chúng tôi yêu hơn cả đồ ăn chính là bạn! Chúng tôi có
-            món ăn dành cho tất cả mọi người.
+            Chúng tôi yêu bạn hơn cả món ăn — và luôn mang đến lựa chọn tốt nhất cho sức khỏe của bạn.
           </p>
-
           <div className="flex items-center gap-4">
-            <Link href="/recipes">
+            <Link href="services/recipes">
               <Button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-lg">
                 Gợi ý Công Thức
               </Button>

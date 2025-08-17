@@ -144,7 +144,7 @@ export default function Meal() {
 
             {/* Carbs */}
             <div>
-              <label className="block mb-1 text-sm font-medium flex items-center gap-1">
+              <label className=" mb-1 text-sm font-medium flex items-center gap-1">
                 <Wheat className="w-4 h-4 text-green-500" /> Carbs (g)
               </label>
               <Input
