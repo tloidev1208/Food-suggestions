@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export default function HomeHeader() {
   return (
-    <section className="max-w-7xl bg-white justify-center mx-auto px-4">
+    <section className="max-w-7xl bg-white justify-center mx-auto px-4 pt-12">
       <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Left Content */}
         <div className="space-y-6">

@@ -6,10 +6,24 @@ import {
   RadialBar,
 } from "recharts";
 
+interface NutritionResultType {
+  bmi: number;
+  bmi_status: string;
+  bmr: number;
+  tdee: number;
+  recommended_calories: number;
+}
+
+interface ChartData {
+  name: string;
+  value: number;
+  fill?: string;
+}
+
 interface NutritionResultProps {
-  result: any;
-  bmiData: any[];
-  tdeeData: any[];
+  result: NutritionResultType;
+  bmiData: ChartData[];
+  tdeeData: ChartData[];
 }
 
 export default function NutritionResult({ result, bmiData, tdeeData }: NutritionResultProps) {

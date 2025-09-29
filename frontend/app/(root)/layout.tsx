@@ -1,15 +1,32 @@
+"use client";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { ReactNode } from "react";
+import Sidebar from "@/components/Sidebar";
+import { ReactNode, useState } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <main className="">
-        <Header />
-      <div className="py-12">
-        {children}
+    <main className="min-h-screen bg-white">
+      <Header />
+
+      <div className="flex">
+        {/* Sidebar */}
+        <Sidebar isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} />
+
+        {/* Nội dung chính */}
+        <div
+          className={`transition-all duration-300 flex-1 px-6 ${
+            isOpen ? "ml-64" : "ml-20"
+          }`}
+        >
+          {children}
+        </div>
       </div>
-      <Footer/>
+
+      <Footer />
     </main>
   );
 };

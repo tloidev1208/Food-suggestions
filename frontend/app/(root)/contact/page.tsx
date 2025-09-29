@@ -1,21 +1,11 @@
-import SocialFeed from "@/components/SocialFeed";
-import RecentlyJoined from "@/components/RecentlyJoined";
-import SidebarBlog from "@/components/SidebarBlog";
+import React from 'react';
 
-export default function BlogPage() {
-  return (
-    <div className="max-w-full bg-gray-100 mx-auto">
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex">
-          <SidebarBlog />
+const Contact = () => {
+    return (
+        <div className="flex items-center justify-center h-screen">
+            Liên hệ
         </div>
-        <div className="flex-1">
-          <SocialFeed />
-        </div>
-        <div className="flex">
-          <RecentlyJoined />
-        </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+export default Contact;

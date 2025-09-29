@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 type Nutrition = {
   calories: string;
@@ -61,10 +61,13 @@ ${recipe.instructions}${nutritionInfo}
   return (
     <div className="border rounded p-4 shadow">
       <h3 className="font-bold text-4xl text-center">{recipe.name}</h3>
-      <img
+      <Image
         src={recipe.image || "https://www.cet.edu.vn/wp-content/uploads/2018/03/ga-nuong-mat-ong.jpg"}
         alt={recipe.name}
+        width={800}
+        height={320}
         className="w-full h-80 object-cover mt-2 rounded"
+        style={{ objectFit: "cover" }}
       />
       {recipe.nutrition && (
         <div className="flex gap-4 mt-4 justify-center">

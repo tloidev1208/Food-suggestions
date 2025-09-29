@@ -17,6 +17,7 @@ const mongoose = require("mongoose");
 const imageSearchRouter = require("./routes/imageSearch");
 const mealPlannerRoutes = require("./routes/mealPlanner");
 const nutritionRoutes = require("./routes/nutritionAdvice");
+const stravaRoutes = require("./routes/strava");
 
 
 const app = express();
@@ -47,6 +48,7 @@ app.use("/api/posts", postRoutes);
 app.use("/", imageSearchRouter);
 app.use("/api/recipes", mealPlannerRoutes);
 app.use("/api/recipes", nutritionRoutes);
+app.use("/strava", stravaRoutes);
 
 // Swagger Docs
 swaggerDocs(app);

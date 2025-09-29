@@ -7,15 +7,15 @@ import Worksteps from "@/components/Worksteps";
 import { ImageUp, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default function Recipes() {
   const [showTextUpload, setShowTextUpload] = useState(false);
 
   return (
-    <div className="flex flex-col items-center justify-between py-12 px-6 max-w-4xl">
+    <div className="flex flex-col items-center justify-between py-20 px-6 max-w-6xl">
       {/* Header */}
       <header className="text-center space-y-4 max-w-3xl">
         <h1 className="text-4xl font-bold text-gray-800">
-          🍽️ Gợi ý bất kì món ăn nào từ hình ảnh
+          🍽️ Gợi ý bất kì món ăn nào
         </h1>
         <p className="text-lg text-gray-600">
           Tải lên ảnh của bất kỳ món ăn nào và AI của chúng tôi sẽ xác định công

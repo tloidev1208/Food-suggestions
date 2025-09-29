@@ -9,7 +9,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Image from "next/image";
+import { Ruler, Weight, User, HeartPulse, Dumbbell, Target } from "lucide-react";
 
 interface NutritionFormProps {
   form: {
@@ -33,74 +33,110 @@ export default function NutritionForm({
 }: NutritionFormProps) {
   return (
     <div>
-      <Card>
+      <Card className="shadow-lg border-2 border-blue-100">
         <CardHeader>
-          <CardTitle>Nhập thông tin để nhận tư vấn dinh dưỡng</CardTitle>
+          <CardTitle className="text-blue-700 text-2xl flex items-center gap-2">
+            <HeartPulse className="w-7 h-7 text-pink-500" />
+            Nhập thông tin để nhận tư vấn dinh dưỡng
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <Input
-              placeholder="Chiều cao (cm)"
-              value={form.height}
-              onChange={(e) => handleChange("height", e.target.value)}
-            />
-            <Input
-              placeholder="Cân nặng (kg)"
-              value={form.weight}
-              onChange={(e) => handleChange("weight", e.target.value)}
-            />
-            <Input
-              placeholder="Tuổi"
-              value={form.age}
-              onChange={(e) => handleChange("age", e.target.value)}
-            />
-
-            <div className="flex flex-col md:flex-row gap-4">
-              <Select
-                value={form.gender}
-                onValueChange={(v) => handleChange("gender", v)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Giới tính" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Nam">Nam</SelectItem>
-                  <SelectItem value="Nữ">Nữ</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select
-                value={form.activity_level}
-                onValueChange={(v) => handleChange("activity_level", v)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Mức độ hoạt động" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sedentary">Ít vận động</SelectItem>
-                  <SelectItem value="light">Nhẹ</SelectItem>
-                  <SelectItem value="moderate">Trung bình</SelectItem>
-                  <SelectItem value="active">Nhiều</SelectItem>
-                  <SelectItem value="very_active">Rất nhiều</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select
-                value={form.goal}
-                onValueChange={(v) => handleChange("goal", v)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Mục tiêu" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="maintain">Duy trì cân nặng</SelectItem>
-                  <SelectItem value="lose">Giảm cân</SelectItem>
-                  <SelectItem value="gain">Tăng cân</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="flex flex-col gap-6">
+            {/* Hàng trên: 3 input */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="relative">
+                <Ruler className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400 w-5 h-5" />
+                <Input
+                  className="pl-10"
+                  placeholder="Chiều cao (cm)"
+                  value={form.height}
+                  onChange={(e) => handleChange("height", e.target.value)}
+                />
+              </div>
+              <div className="relative">
+                <Weight className="absolute left-3 top-1/2 -translate-y-1/2 text-green-400 w-5 h-5" />
+                <Input
+                  className="pl-10"
+                  placeholder="Cân nặng (kg)"
+                  value={form.weight}
+                  onChange={(e) => handleChange("weight", e.target.value)}
+                />
+              </div>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-400 w-5 h-5" />
+                <Input
+                  className="pl-10"
+                  placeholder="Tuổi"
+                  value={form.age}
+                  onChange={(e) => handleChange("age", e.target.value)}
+                />
+              </div>
             </div>
 
-            <Button onClick={handleSubmit} disabled={loading}>
+            {/* Hàng dưới: 3 select nằm ngang */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Select
+                  value={form.gender}
+                  onValueChange={(v) => handleChange("gender", v)}
+                >
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Nam">Nam</SelectItem>
+                    <SelectItem value="Nữ">Nữ</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <HeartPulse className="w-5 h-5 text-pink-400" />
+                </span>
+              </div>
+              <div>
+                <Select
+                  value={form.activity_level}
+                  onValueChange={(v) => handleChange("activity_level", v)}
+                >
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Mức độ hoạt động" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sedentary">Ít vận động</SelectItem>
+                    <SelectItem value="light">Nhẹ</SelectItem>
+                    <SelectItem value="moderate">Trung bình</SelectItem>
+                    <SelectItem value="active">Nhiều</SelectItem>
+                    <SelectItem value="very_active">Rất nhiều</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <Dumbbell className="w-5 h-5 text-orange-400" />
+                </span>
+              </div>
+              <div>
+                <Select
+                  value={form.goal}
+                  onValueChange={(v) => handleChange("goal", v)}
+                >
+                  <SelectTrigger className="pl-10">
+                    <SelectValue placeholder="Mục tiêu" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="maintain">Duy trì cân nặng</SelectItem>
+                    <SelectItem value="lose">Giảm cân</SelectItem>
+                    <SelectItem value="gain">Tăng cân</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <Target className="w-5 h-5 text-blue-400" />
+                </span>
+              </div>
+            </div>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full mt-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white font-bold text-lg py-2"
+            >
               {loading ? "Đang phân tích..." : "Phân tích"}
             </Button>
           </div>

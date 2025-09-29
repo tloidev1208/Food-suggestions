@@ -1,70 +1,52 @@
 "use client";
 import NutritionResult from "@/components/NutritionResult";
 import { useState } from "react";
-
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Drumstick,
-  Wheat,
-  Droplets,
-  Salad,
-  Ban,
-  Utensils,
-  Info,
-} from "lucide-react";
+import { Drumstick, Wheat, Droplets, Salad, Ban, Utensils, Info } from "lucide-react";
 import NutritionForm from "@/components/NutritionForm";
-import Image from "next/image";
+
+interface NutritionResult {
+  status: string;
+  bmi: number;
+  bmi_status: string;
+  bmr: number;
+  tdee: number;
+  recommended_calories: number;
+  macros: {
+    protein: { grams: number; percent: number };
+    fat: { grams: number; percent: number };
+    carbs: { grams: number; percent: number };
+  };
+  ai?: {
+    foods_to_eat: string[];
+    foods_to_limit: string[];
+    sample_meal_plan: {
+      breakfast: string;
+      lunch: string;
+      dinner: string;
+      snack: string;
+    };
+    advice: string;
+  };
+}
 
 export default function NutritionAdvicePage() {
   const [form, setForm] = useState({
     height: "",
-    weight: "", // Đổi từ BMR thành weight
+    weight: "",
     age: "",
     gender: "Nam",
     activity_level: "moderate",
     goal: "maintain",
   });
 
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<NutritionResult | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (key: string, value: string) => {
     setForm({ ...form, [key]: value });
   };
-  const listItems =
-    result && result.ai
-      ? [
-          {
-            title: "Thực phẩm nên ăn",
-            icon: <Salad className="w-5 h-5 text-green-600" />,
-            bg: "bg-green-50",
-            items: result.ai.foods_to_eat,
-          },
-          {
-            title: "Thực phẩm nên hạn chế",
-            icon: <Ban className="w-5 h-5 text-red-600" />,
-            bg: "bg-red-50",
-            items: result.ai.foods_to_limit,
-          },
-          {
-            title: "Gợi ý thực đơn mẫu",
-            icon: <Utensils className="w-5 h-5 text-blue-600" />,
-            bg: "bg-blue-50",
-            items: [
-              `Bữa sáng: ${result.ai.sample_meal_plan.breakfast}`,
-              `Bữa trưa: ${result.ai.sample_meal_plan.lunch}`,
-              `Bữa tối: ${result.ai.sample_meal_plan.dinner}`,
-              `Bữa phụ: ${result.ai.sample_meal_plan.snack}`,
-            ],
-          },
-          {
-            title: "Lời khuyên",
-            icon: <Info className="w-5 h-5 text-yellow-600" />,
-            bg: "bg-yellow-50",
-            items: [result.ai.advice],
-          },
-        ]
-      : [];
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -75,7 +57,7 @@ export default function NutritionAdvicePage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             height: Number(form.height),
-            weight: Number(form.weight), // Đổi từ BMR thành weight
+            weight: Number(form.weight),
             age: Number(form.age),
             gender: form.gender,
             activity_level: form.activity_level,
@@ -90,20 +72,28 @@ export default function NutritionAdvicePage() {
     }
     setLoading(false);
   };
+
   const bmiData =
     result && result.status === "success"
       ? [{ name: "BMI", value: result.bmi, fill: "#3c8cfb" }]
       : [];
   const tdeeData =
     result && result.status === "success"
-      ? [{ name: "TDEE", value: result.tdee,fill: "#C6005C" }]
+      ? [{ name: "TDEE", value: result.tdee, fill: "#C6005C" }]
       : [];
-  const caloriesData =
-    result && result.status === "success"
-      ? [{ name: "Calories", value: result.recommended_calories }]
-      : [];
+
   return (
-    <div className="max-w-6xl mx-auto p-6 ">
+    <div className="max-w-6xl mx-auto p-6 py-20 ">
+      <header className="text-center space-y-4 max-w-3xl">
+        <h1 className="text-4xl font-bold text-gray-800">
+          🍽️ Tư vấn dinh dưỡng
+        </h1>
+        <p className="text-lg text-gray-600">
+          Nhập vào thông tin cá nhân và mục tiêu dinh dưỡng của bạn, chúng tôi sẽ
+          cung cấp lời khuyên dinh dưỡng chi tiết, bao gồm phân tích BMI, TDEE,
+          lượng calo khuyến nghị.
+        </p>
+      </header>
       <NutritionForm
         form={form}
         loading={loading}
@@ -126,7 +116,6 @@ export default function NutritionAdvicePage() {
                   tdeeData={tdeeData}
                 />
               </div>
-
               {/* Macro */}
               <div className="grid grid-cols-3 gap-4">
                 {/* Protein */}
@@ -142,7 +131,6 @@ export default function NutritionAdvicePage() {
                     ({result.macros.protein.percent}%)
                   </p>
                 </div>
-
                 {/* Fat */}
                 <div className="bg-white rounded-2xl p-4 shadow-sm text-center">
                   <div className="flex items-center justify-center gap-2 text-yellow-700 font-medium">
@@ -156,7 +144,6 @@ export default function NutritionAdvicePage() {
                     ({result.macros.fat.percent}%)
                   </p>
                 </div>
-
                 {/* Carbs */}
                 <div className="bg-white rounded-2xl p-4 shadow-sm text-center">
                   <div className="flex items-center justify-center gap-2 text-green-700 font-medium">
@@ -172,7 +159,6 @@ export default function NutritionAdvicePage() {
                 </div>
               </div>
             </div>
-
             {/* Hàng 2: 3 list item */}
             {result.ai && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -188,7 +174,6 @@ export default function NutritionAdvicePage() {
                     ))}
                   </ul>
                 </div>
-
                 {/* Thực phẩm nên hạn chế */}
                 <div className="bg-red-50 rounded-xl p-4 shadow-sm">
                   <div className="flex items-center gap-2 mb-2 font-medium text-red-700">
@@ -201,7 +186,6 @@ export default function NutritionAdvicePage() {
                     ))}
                   </ul>
                 </div>
-
                 {/* Gợi ý thực đơn mẫu */}
                 <div className="bg-blue-50 rounded-xl p-4 shadow-sm">
                   <div className="flex items-center gap-2 mb-2 font-medium text-blue-700">
@@ -229,7 +213,6 @@ export default function NutritionAdvicePage() {
                 </div>
               </div>
             )}
-
             {/* Hàng 3: Lời khuyên */}
             {result.ai && (
               <div className="bg-yellow-50 rounded-xl p-4 shadow-sm">
