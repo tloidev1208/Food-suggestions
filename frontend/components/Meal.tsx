@@ -162,7 +162,7 @@ export default function Meal() {
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full md:w-1/2 bg-gradient-to-r from-blue-400 to-pink-400 text-white font-bold text-lg py-2"
+                className="w-full md:w-1/2 bg-gray-500 text-white hover:bg-gray-600 hover:text-white cursor-pointer"
               >
                 {loading ? "Đang tạo..." : "Tạo kế hoạch"}
               </Button>

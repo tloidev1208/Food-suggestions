@@ -24,7 +24,7 @@ export default function Recipes() {
       </header>
 
       {/* Upload area */}
-      <section className="mt-12 w-full max-w-7xl bg-white p-6 rounded-xl shadow-md border">
+      <section className="mt-6 w-full max-w-7xl bg-white p-6 rounded-xl shadow-md border">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {showTextUpload ? (

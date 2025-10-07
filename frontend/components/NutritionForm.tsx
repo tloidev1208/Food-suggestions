@@ -135,7 +135,7 @@ export default function NutritionForm({
             <Button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full mt-2 bg-gradient-to-r from-blue-400 to-pink-400 text-white font-bold text-lg py-2"
+              className="w-full mt-2 bg-gray-500 hover:bg-gray-600 hover:text-white cursor-pointe text-white font-bold text-lg py-2"
             >
               {loading ? "Đang phân tích..." : "Phân tích"}
             </Button>

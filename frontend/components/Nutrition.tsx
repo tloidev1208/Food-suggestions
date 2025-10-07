@@ -83,16 +83,16 @@ export default function NutritionAdvicePage() {
       : [];
 
   return (
-    <div className="max-w-6xl mx-auto p-6 py-20 ">
-      <header className="text-center space-y-4 max-w-3xl">
+    <div className="max-w-6xl mx-auto p-6 py-20 justify-between items-center">
+      <header className="text-center space-y-4">
         <h1 className="text-4xl font-bold text-gray-800">
           🍽️ Tư vấn dinh dưỡng
         </h1>
-        <p className="text-lg text-gray-600">
+        <div className="text-lg text-gray-600 max-w-3xl mx-auto">
           Nhập vào thông tin cá nhân và mục tiêu dinh dưỡng của bạn, chúng tôi sẽ
           cung cấp lời khuyên dinh dưỡng chi tiết, bao gồm phân tích BMI, TDEE,
           lượng calo khuyến nghị.
-        </p>
+        </div>
       </header>
       <NutritionForm
         form={form}
