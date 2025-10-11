@@ -5,6 +5,7 @@ import numpy as np
 import uvicorn
 import io
 from PIL import Image
+import os  # 👈 cần để lấy biến môi trường PORT
 
 app = FastAPI()
 
@@ -12,18 +13,17 @@ app = FastAPI()
 model = TFSMLayer("./model.savedmodel", call_endpoint="serving_default")
 
 # ⚠️ Thay bằng label thật mà bạn train
-labels = ["Pho", "Banhmi"]
+labels = ["Phở", "Bánh Mì"]
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
         img = Image.open(io.BytesIO(await file.read())).convert("RGB")
-        img = img.resize((224, 224))  # 👈 chỉnh đúng input model Teachable Machine (thường 224x224)
+        img = img.resize((224, 224))  # 👈 chỉnh đúng input model Teachable Machine
         img_array = image.img_to_array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
         preds = model(img_array)
-        # ✅ fix lỗi dict
         if isinstance(preds, dict):
             preds = list(preds.values())[0]
         preds = preds.numpy()[0]
@@ -40,4 +40,5 @@ async def predict(file: UploadFile = File(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 10000))  # ✅ Render cấp port qua biến môi trường
+    uvicorn.run(app, host="0.0.0.0", port=port)
