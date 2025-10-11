@@ -48,7 +48,6 @@ app.use("/", imageSearchRouter);
 app.use("/api/recipes", mealPlannerRoutes);
 app.use("/api/recipes", nutritionRoutes);
 app.use("/strava", stravaRoutes);
-app.use("/api/predict", predictRoute);
 
 // Swagger Docs
 swaggerDocs(app);
