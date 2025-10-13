@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from keras.layers import TFSMLayer
 from tensorflow.keras.preprocessing import image
 import numpy as np
@@ -8,6 +9,15 @@ from PIL import Image
 import os  # 👈 cần để lấy biến môi trường PORT
 
 app = FastAPI()
+
+# ✅ Thêm CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 👈 Cho phép tất cả frontend (hoặc chỉ "http://localhost:3000")
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ✅ Load model bằng TFSMLayer (Keras 3)
 model = TFSMLayer("./model.savedmodel", call_endpoint="serving_default")
@@ -37,7 +47,6 @@ async def predict(file: UploadFile = File(...)):
         import traceback
         traceback.print_exc()
         return {"error": str(e)}
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))  # ✅ Render cấp port qua biến môi trường

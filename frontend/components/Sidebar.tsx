@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Settings, Bot, Activity, BookOpen, Mail, ChevronLeft, ChevronRight, Utensils } from "lucide-react";
+import { Home, Settings, Bot, Activity, BookOpen, Mail, ChevronLeft, ChevronRight, Utensils, Flame } from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ interface SidebarProps {
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
-  { href: "/services", icon: Bot, label: "Trợ Lý AI" },
+  { href: "/services", icon: Bot, label: "Trợ Lý AI", hot: true },
   { href: "/activities", icon: Activity, label: "Vận Động" },
   { href: "/blog", icon: BookOpen, label: "Blog" },
   { href: "/contact", icon: Mail, label: "Liên hệ" },
@@ -36,9 +36,9 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
         <Utensils className="w-10 h-10 text-red-500" />
         {isOpen && (
           <Link href="/" className="text-3xl font-bold z-20">
-          <span className="text-gray-900">Nutri</span>
-          <span className="text-red-500">AI.</span>
-        </Link>
+            <span className="text-gray-900">Nutri</span>
+            <span className="text-red-500">AI.</span>
+          </Link>
         )}
       </div>
 
@@ -58,11 +58,29 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
-              <Icon className="w-6 h-6 flex-shrink-0" />
+              <div className="relative">
+                <Icon className="w-6 h-6 flex-shrink-0" />
+                {/* collapsed view: small flame badge */}
+                {!isOpen && item.hot && (
+                  <span className="absolute -top-1 -right-1">
+                    <Flame className="w-3 h-3 text-red-500" />
+                  </span>
+                )}
+              </div>
+
               {isOpen && (
-                <span className="transition-opacity whitespace-nowrap">
-                  {item.label}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="transition-opacity whitespace-nowrap">
+                    {item.label}
+                  </span>
+                  {/* expanded view: flame label for hot item */}
+                  {item.hot && (
+                    <span className="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                      <Flame className="w-3 h-3" />
+                      Hot
+                    </span>
+                  )}
+                </div>
               )}
             </Link>
           );
