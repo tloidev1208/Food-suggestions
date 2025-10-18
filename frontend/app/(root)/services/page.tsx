@@ -7,6 +7,9 @@ import Recipes from "@/components/Recipes";
 import Analysis from "@/components/Analysis";
 import Nutrition from "@/components/Nutrition";
 import Meal from "@/components/Meal";
+import Recovery from "@/components/Recovery";
+
+
 
 const Service = () => {
   const [active, setActive] = useState("nhanDien");
@@ -16,6 +19,7 @@ const Service = () => {
     { id: "phanTich", label: "Phân tích món ăn", icon: <BarChart3 size={20} />, component: <Analysis /> },
     { id: "tuVan", label: "Tư vấn dinh dưỡng", icon: <Leaf size={20} />, component: <Nutrition /> },
     { id: "lapKeHoach", label: "Lập kế hoạch bữa ăn", icon: <Calendar size={20} />, component: <Meal/> },
+    { id: "phucHoi", label: "Phục hồi thể trạng", icon: <Calendar size={20} />, component: <Recovery/> },
   ];
 
   return (

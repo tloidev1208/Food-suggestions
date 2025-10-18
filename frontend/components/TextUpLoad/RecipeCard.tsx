@@ -1,7 +1,7 @@
 // Hiển thị chi tiết một công thức
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 type Nutrition = {
@@ -24,8 +24,52 @@ type RecipeCardProps = {
   recipe: Recipe;
 };
 
+interface SerpImage {
+  title?: string;
+  source?: string;
+  original?: string;
+  thumbnail?: string;
+  width?: number;
+  height?: number;
+  position?: number;
+}
+
+interface SerpResponse {
+  images?: SerpImage[];
+  serpapi_metadata?: Record<string, unknown>;
+}
+
 export default function RecipeCard({ recipe }: RecipeCardProps) {
   const [showSaveMenu, setShowSaveMenu] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(recipe.image || null);
+  const [loadingImage, setLoadingImage] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    async function fetchImageForRecipe() {
+      if (!recipe?.name) return;
+      setLoadingImage(true);
+      try {
+        const q = encodeURIComponent(recipe.name);
+        const res = await fetch(`http://localhost:5000/api/serp-images/search?query=${q}`);
+        if (!res.ok) throw new Error(`Image API error ${res.status}`);
+        const data = (await res.json()) as SerpResponse;
+        const first = data?.images && data.images.length > 0 ? data.images[0] : null;
+        const src = first?.original || first?.thumbnail || recipe.image || null;
+        if (mounted) setImageUrl(src);
+      } catch (err) {
+        console.error("Failed to fetch image:", err);
+        if (mounted) setImageUrl(recipe.image || null);
+      } finally {
+        if (mounted) setLoadingImage(false);
+      }
+    }
+
+    fetchImageForRecipe();
+    return () => {
+      mounted = false;
+    };
+  }, [recipe.name, recipe.image]);
 
   const saveToFile = () => {
     const ingredientsList = recipe.ingredients.map((item) => `- ${item}`).join("\n");
@@ -58,17 +102,29 @@ ${recipe.instructions}${nutritionInfo}
     setShowSaveMenu(false);
   };
 
+  const fallbackImage = "https://www.cet.edu.vn/wp-content/uploads/2018/03/ga-nuong-mat-ong.jpg";
+
   return (
     <div className="border rounded p-4 shadow">
       <h3 className="font-bold text-4xl text-center">{recipe.name}</h3>
-      <Image
-        src={recipe.image || "https://www.cet.edu.vn/wp-content/uploads/2018/03/ga-nuong-mat-ong.jpg"}
-        alt={recipe.name}
-        width={800}
-        height={320}
-        className="w-full h-80 object-cover mt-2 rounded"
-        style={{ objectFit: "cover" }}
-      />
+
+      <div className="w-full h-80 relative mt-2 rounded overflow-hidden">
+        {loadingImage && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
+            <span className="text-sm text-gray-600">Đang tải hình...</span>
+          </div>
+        )}
+        <Image
+          src={imageUrl || fallbackImage}
+          alt={recipe.name}
+          width={800}
+          height={320}
+          className="w-full h-80 object-cover"
+          style={{ objectFit: "cover" }}
+          unoptimized
+        />
+      </div>
+
       {recipe.nutrition && (
         <div className="flex gap-4 mt-4 justify-center">
           {[
