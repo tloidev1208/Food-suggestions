@@ -15,7 +15,7 @@ const Service = () => {
   const [active, setActive] = useState("nhanDien");
 
   const menuItems = [
-    { id: "nhanDien", label: "Nhận diện món ăn", icon: <Utensils size={20} />, component: <Recipes /> },
+    { id: "nhanDien", label: "Gợi ý món ăn", icon: <Utensils size={20} />, component: <Recipes /> },
     { id: "phanTich", label: "Phân tích món ăn", icon: <BarChart3 size={20} />, component: <Analysis /> },
     { id: "tuVan", label: "Tư vấn dinh dưỡng", icon: <Leaf size={20} />, component: <Nutrition /> },
     { id: "lapKeHoach", label: "Lập kế hoạch bữa ăn", icon: <Calendar size={20} />, component: <Meal/> },
