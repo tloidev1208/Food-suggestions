@@ -67,3 +67,7 @@ bash
 Copy
 Edit
 http://localhost:5000/api-docs
+
+
+Run code
+B1: cd BE -> 
