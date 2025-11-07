@@ -1,10 +1,9 @@
-require("dotenv").config(); 
-
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const OpenAI = require("openai");
 
-// OpenAI Config
+// ⚙️ Cấu hình OpenAI
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -32,10 +31,10 @@ const openai = new OpenAI({
  *         description: Danh sách món ăn gợi ý từ OpenAI
  */
 router.post("/food-suggest", async (req, res) => {
-  const { ingredients } = req.body;
+  const {ingredients} = req.body;
 
   if (!ingredients || ingredients.length === 0) {
-    return res.status(400).json({ error: "Vui lòng cung cấp ingredients" });
+    return res.status(400).json({error: "Vui lòng cung cấp ingredients"});
   }
 
   try {
@@ -66,22 +65,21 @@ Mỗi món ăn có cấu trúc:
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+      messages: [{role: "user", content: prompt}],
       temperature: 1.0,
     });
 
     let text = completion.choices[0].message.content;
-
     let cleanText = text.replace(/```json|```/g, "").trim();
 
     let recipes;
     try {
       recipes = JSON.parse(cleanText);
     } catch (err) {
-      recipes = [{ note: "OpenAI trả về không phải JSON chuẩn", raw: text }];
+      recipes = [{note: "OpenAI trả về không phải JSON chuẩn", raw: text}];
     }
 
-    res.json({ status: "success", recipes });
+    res.json({status: "success", recipes});
   } catch (error) {
     console.error("OpenAI Error:", error);
     res.status(500).json({
