@@ -44,7 +44,7 @@ export default function HomeHeader() {
         </div>
 
         {/* Right Image */}
-        <div className="relative flex justify-center lg:justify-end">
+        <div className="relative flex justify-center lg:justify-center items-center">
           <Image
             src="/images/Bieu-do-dinh-duong21.jpg" // Đường dẫn tới ảnh trong public/images
             alt="Delicious Food"
