@@ -2,7 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Settings, Bot, Activity, BookOpen, Mail, ChevronLeft, ChevronRight, Utensils, Flame } from "lucide-react";
+import {
+  Home,
+  Settings,
+  Bot,
+  Activity,
+  BookOpen,
+  Mail,
+  ChevronLeft,
+  ChevronRight,
+  Utensils,
+  Flame,
+} from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,7 +23,7 @@ interface SidebarProps {
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
   { href: "/services", icon: Bot, label: "Trợ Lý AI", hot: true },
-  { href: "/activities", icon: Activity, label: "Vận Động" },
+  { href: "/activities", icon: Activity, label: "Vận Động", new: true },
   { href: "/blog", icon: BookOpen, label: "Blog" },
   { href: "/contact", icon: Mail, label: "Liên hệ" },
   { href: "/settings", icon: Settings, label: "Settings" },
@@ -73,11 +84,20 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
                   <span className="transition-opacity whitespace-nowrap">
                     {item.label}
                   </span>
-                  {/* expanded view: flame label for hot item */}
+
+                  {/* HOT badge */}
                   {item.hot && (
                     <span className="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold">
                       <Flame className="w-3 h-3" />
                       Hot
+                    </span>
+                  )}
+
+                  {/* NEW badge */}
+                  {item.new && (
+                    <span className="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                     <Flame className="w-3 h-3" />
+                      New
                     </span>
                   )}
                 </div>
