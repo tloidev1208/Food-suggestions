@@ -7,7 +7,7 @@ const path = require("path");
 // Cấu hình Multer lưu vào folder local "uploads/posts"
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/posts"); // tạo folder uploads/posts
+    cb(null, "images");
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "_" + file.originalname;
