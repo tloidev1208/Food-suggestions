@@ -14,7 +14,7 @@ const foodRecipesRoutes = require("./routes/food-recipes");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/post");
 const mongoose = require("mongoose");
-//const serpImagesRouter = require("./routes/serpImages");
+const serpImagesRouter = require("./routes/serpImages");
 const mealPlannerRoutes = require("./routes/mealPlanner");
 const nutritionRoutes = require("./routes/nutritionAdvice");
 const stravaRoutes = require("./routes/strava");
@@ -55,6 +55,11 @@ app.use("/api/posts", createpost);
 app.use("/api/posts", deletepost);
 app.use("/api/posts", getAllPost);
 app.use("/api/posts", getById);
+app.use("/api/posts", postRoutes);
+app.use("/api/recipes", mealPlannerRoutes);
+app.use("/api/recipes", nutritionRoutes);
+app.use("/strava", stravaRoutes);
+app.use("/api/serp-images", serpImagesRouter);
 
 // Swagger Docs
 swaggerDocs(app);

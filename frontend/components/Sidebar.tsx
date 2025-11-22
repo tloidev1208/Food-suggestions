@@ -1,8 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Home, Settings, Bot, Activity, BookOpen, Mail, ChevronLeft, ChevronRight, Utensils } from "lucide-react";
+import {usePathname} from "next/navigation";
+import {
+  Home,
+  Settings,
+  Bot,
+  Activity,
+  BookOpen,
+  Mail,
+  ChevronLeft,
+  ChevronRight,
+  Utensils,
+  Flame,
+} from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -10,15 +21,15 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { href: "/", icon: Home, label: "Home" },
-  { href: "/services", icon: Bot, label: "Trợ Lý AI" },
-  { href: "/activities", icon: Activity, label: "Vận Động" },
-  { href: "/blog", icon: BookOpen, label: "Blog" },
-  { href: "/contact", icon: Mail, label: "Liên hệ" },
-  { href: "/settings", icon: Settings, label: "Settings" },
+  {href: "/", icon: Home, label: "Home"},
+  {href: "/services", icon: Bot, label: "Trợ Lý AI", hot: true},
+  {href: "/activities", icon: Activity, label: "Vận Động", new: true},
+  {href: "/blog", icon: BookOpen, label: "Blog"},
+  {href: "/contact", icon: Mail, label: "Liên hệ"},
+  {href: "/settings", icon: Settings, label: "Settings"},
 ];
 
-export default function Sidebar({ isOpen, toggle }: SidebarProps) {
+export default function Sidebar({isOpen, toggle}: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -36,9 +47,9 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
         <Utensils className="w-10 h-10 text-red-500" />
         {isOpen && (
           <Link href="/" className="text-3xl font-bold z-20">
-          <span className="text-gray-900">Nutri</span>
-          <span className="text-red-500">AI.</span>
-        </Link>
+            <span className="text-gray-900">Nutri</span>
+            <span className="text-red-500">AI.</span>
+          </Link>
         )}
       </div>
 
@@ -60,9 +71,27 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
             >
               <Icon className="w-6 h-6 flex-shrink-0" />
               {isOpen && (
-                <span className="transition-opacity whitespace-nowrap">
-                  {item.label}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="transition-opacity whitespace-nowrap">
+                    {item.label}
+                  </span>
+
+                  {/* HOT badge */}
+                  {item.hot && (
+                    <span className="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                      <Flame className="w-3 h-3" />
+                      Hot
+                    </span>
+                  )}
+
+                  {/* NEW badge */}
+                  {item.new && (
+                    <span className="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                      <Flame className="w-3 h-3" />
+                      New
+                    </span>
+                  )}
+                </div>
               )}
             </Link>
           );

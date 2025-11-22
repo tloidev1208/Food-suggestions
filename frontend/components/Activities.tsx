@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useEffect, useState } from "react";
+import Recovery from "@/components/Recovery"; // <-- added
 
 interface Props {
   id: number | null;
@@ -36,6 +37,15 @@ export default function ActivityByID({ id }: Props) {
   const [detail, setDetail] = useState<ActivityDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [chartData, setChartData] = useState<ChartPoint[]>([]);
+
+  // new state to show Recovery component and pass prefill values
+  const [showRecovery, setShowRecovery] = useState(false);
+  const [recoveryPrefill, setRecoveryPrefill] = useState({
+    distance: "",
+    calories: "",
+    moving_time: "",
+    avg_speed: "",
+  });
 
   useEffect(() => {
     if (!id) {
@@ -99,20 +109,43 @@ export default function ActivityByID({ id }: Props) {
   const caloriesData = [
     { name: "Calories", value: detail.calories || 0, fill: "#f87171" },
   ];
+  const avgSpeed = detail.moving_time ? (detail.distance / detail.moving_time) * 3.6 : 0;
   const speedData = [
     {
       name: "Avg Speed",
-      value: Number(((detail.distance / detail.moving_time) * 3.6).toFixed(2)),
+      value: Number(avgSpeed.toFixed(2)),
       fill: "#60a5fa",
     },
   ];
 
   return (
     <div className="p-4 border rounded-xl bg-white shadow space-y-4">
-      <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-        <Footprints className="w-5 h-5 text-blue-500" />
-        {detail.name}
-      </h3>
+      <div className="flex items-start justify-between">
+        <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+          <Footprints className="w-5 h-5 text-blue-500" />
+          {detail.name}
+        </h3>
+
+        {/* Button -> truyền dữ liệu sang Recovery component */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              // chuyển các giá trị về dạng chuỗi như Recovery hiện đang xử lý
+              setRecoveryPrefill({
+                distance: ((detail.distance / 1000) || 0).toFixed(2), // km
+                calories: String(detail.calories || 0),
+                moving_time: (detail.moving_time / 3600).toFixed(2), // giờ
+                avg_speed: avgSpeed.toFixed(2), // km/h
+              });
+              setShowRecovery(true);
+            }}
+            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+          >
+            Phục hồi thể trạng
+          </button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         {/* Quãng đường */}
         <div className="bg-blue-50 rounded-xl p-3 flex flex-col items-center">
@@ -208,6 +241,25 @@ export default function ActivityByID({ id }: Props) {
           </div>
         </div>
       </div>
+         {/* Hiển thị Recovery component (ví dụ slide-down / panel) */}
+      {showRecovery && (
+        <div className=" items-end justify-end">
+            <button
+              onClick={() => setShowRecovery(false)}
+              className="text-sm text-gray-500 hover:underline"
+            >
+              Đóng
+            </button>
+    
+          <Recovery
+            initialDistance={recoveryPrefill.distance}
+            initialCalories={recoveryPrefill.calories}
+            initialSpeed={recoveryPrefill.avg_speed}
+            initialTime={recoveryPrefill.moving_time}
+            onClose={() => setShowRecovery(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }
