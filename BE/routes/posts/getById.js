@@ -11,17 +11,17 @@ const Post = require("../../models/post");
 
 /**
  * @swagger
- * /api/posts/{id}:
+ * /api/posts/food/{foodId}:
  *   get:
- *     summary: Lấy bài viết theo ID
+ *     summary: Lấy bài viết theo foodId
  *     tags: [Post]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: foodId
  *         schema:
  *           type: string
  *         required: true
- *         description: ID của bài viết
+ *         description: ID món ăn (userId + số thứ tự)
  *     responses:
  *       200:
  *         description: Bài viết được trả về thành công
@@ -30,16 +30,14 @@ const Post = require("../../models/post");
  *             schema:
  *               type: object
  *               properties:
- *                 _id:
- *                   type: string
  *                 user:
+ *                   type: string
+ *                 foodId:
+ *                   type: string
+ *                 foodName:
  *                   type: string
  *                 content:
  *                   type: string
- *                 images:
- *                   type: array
- *                   items:
- *                     type: string
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -48,16 +46,26 @@ const Post = require("../../models/post");
  *       500:
  *         description: Lỗi server
  */
-router.get("/:id", async (req, res) => {
+
+router.get("/food/:foodId", async (req, res) => {
   try {
-    const postId = req.params.id;
-    const post = await Post.findById(postId);
+    const {foodId} = req.params;
+
+    const post = await Post.findOne({foodId}).populate("user", "name");
 
     if (!post) {
       return res.status(404).json({message: "Không tìm thấy bài viết"});
     }
 
-    res.status(200).json(post);
+    const formattedPost = {
+      user: post.user.name || post.user._id,
+      foodId: post.foodId,
+      foodName: post.foodName,
+      content: post.content,
+      createdAt: post.createdAt,
+    };
+
+    res.status(200).json(formattedPost);
   } catch (error) {
     console.error("Lỗi khi lấy bài viết:", error);
     res.status(500).json({error: error.message});

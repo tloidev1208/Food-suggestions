@@ -17,7 +17,7 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js", "./routes/posts/*.js"], // ✅ Quét tất cả các file route
+  apis: ["./routes/**/*.js", "./routes/posts/*.js"], // ✅ Quét tất cả các file route
 };
 
 const swaggerSpec = swaggerJsdoc(options);

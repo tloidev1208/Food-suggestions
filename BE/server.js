@@ -12,7 +12,6 @@ const foodRoutes = require("./routes/food");
 const recipeRoutes = require("./routes/recipes");
 const foodRecipesRoutes = require("./routes/food-recipes");
 const authRoutes = require("./routes/auth");
-const postRoutes = require("./routes/post");
 const mongoose = require("mongoose");
 const serpImagesRouter = require("./routes/serpImages");
 const mealPlannerRoutes = require("./routes/mealPlanner");
@@ -22,6 +21,7 @@ const createpost = require("./routes/posts/createpost");
 const deletepost = require("./routes/posts/deletepost");
 const getAllPost = require("./routes/posts/getAllPost");
 const getById = require("./routes/posts/getById");
+const updatepost = require("./routes/posts/update");
 
 const app = express();
 const PORT = process.env.PORT || 5000; // Cho phép cấu hình PORT qua env
@@ -55,11 +55,11 @@ app.use("/api/posts", createpost);
 app.use("/api/posts", deletepost);
 app.use("/api/posts", getAllPost);
 app.use("/api/posts", getById);
-app.use("/api/posts", postRoutes);
 app.use("/api/recipes", mealPlannerRoutes);
 app.use("/api/recipes", nutritionRoutes);
 app.use("/strava", stravaRoutes);
 app.use("/api/serp-images", serpImagesRouter);
+app.use("/api/posts", updatepost);
 
 // Swagger Docs
 swaggerDocs(app);

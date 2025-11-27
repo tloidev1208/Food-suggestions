@@ -2,12 +2,11 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../../models/post");
 const multer = require("multer");
-const path = require("path");
 
-// Cấu hình Multer lưu vào folder local "uploads/posts"
+// Cấu hình Multer lưu file tạm (hoặc memoryStorage nếu không muốn lưu)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "images");
+    cb(null, "uploads/"); // folder lưu file
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "_" + file.originalname;
@@ -16,19 +15,18 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage});
-
 /**
  * @swagger
  * tags:
  *   name: Post
- *   description: Quản lý bài viết
+ *   description: Quản lý bài viết về món ăn
  */
 
 /**
  * @swagger
  * /api/posts:
  *   post:
- *     summary: Tạo bài viết mới có ảnh (lưu local)
+ *     summary: Tạo bài viết mới về món ăn
  *     tags: [Post]
  *     requestBody:
  *       required: true
@@ -38,18 +36,16 @@ const upload = multer({storage});
  *             type: object
  *             required:
  *               - userId
+ *               - foodName
  *               - content
  *             properties:
  *               userId:
  *                 type: string
- *                 description: ID người dùng
+ *               foodName:
+ *                 type: string
  *               content:
  *                 type: string
- *                 description: Nội dung bài viết
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: Ảnh bài viết
+
  *     responses:
  *       201:
  *         description: Bài viết được tạo thành công
@@ -62,39 +58,38 @@ const upload = multer({storage});
  *                   type: string
  *                 user:
  *                   type: string
+ *                 foodId:
+ *                   type: string
+ *                 foodName:
+ *                   type: string
  *                 content:
  *                   type: string
- *                 images:
- *                   type: array
- *                   items:
- *                     type: string
+ *               
  *                 createdAt:
  *                   type: string
  *                   format: date-time
  *       400:
- *         description: Thiếu userId hoặc content
+ *         description: Thiếu userId, foodName hoặc content
  *       500:
  *         description: Lỗi server
  */
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const {userId, content} = req.body;
+    const {userId, content, foodName} = req.body;
 
-    if (!userId || !content) {
-      return res.status(400).json({message: "userId và content là bắt buộc"});
+    if (!userId || !content || !foodName) {
+      return res.status(400).json({
+        message: "userId, foodName và content là bắt buộc",
+      });
     }
 
-    let imageUrl = null;
-
-    if (req.file) {
-      // Lưu đường dẫn tương đối để truy xuất
-      imageUrl = `/uploads/posts/${req.file.filename}`;
-    }
-
+    const count = await Post.countDocuments({user: userId});
+    const foodId = `${userId}_${count + 1}`;
     const post = new Post({
       user: userId,
+      foodId,
+      foodName,
       content,
-      images: imageUrl ? [imageUrl] : [],
     });
 
     await post.save();

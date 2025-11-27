@@ -1,25 +1,33 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
+
+  foodId: {
+    type: String,
+    unique: true, // Đảm bảo không trùng
+  },
+
+  foodName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+
   content: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
-  images: [
-    {
-      type: String // URL hoặc tên file ảnh
-    }
-  ],
+
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Post', postSchema);
+module.exports = mongoose.model("Post", postSchema);

@@ -11,17 +11,17 @@ const Post = require("../../models/post");
 
 /**
  * @swagger
- * /api/posts/{id}:
+ * /api/posts/food/{foodId}:
  *   delete:
- *     summary: Xóa bài viết theo ID
+ *     summary: Xóa bài viết theo foodId
  *     tags: [Post]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: foodId
  *         required: true
  *         schema:
  *           type: string
- *         description: ID của bài viết cần xóa
+ *         description: ID món ăn cần xóa (userId + số thứ tự)
  *     responses:
  *       200:
  *         description: Xóa bài viết thành công
@@ -38,11 +38,12 @@ const Post = require("../../models/post");
  *       500:
  *         description: Lỗi server
  */
-router.delete("/:id", async (req, res) => {
-  try {
-    const {id} = req.params;
 
-    const deletedPost = await Post.findByIdAndDelete(id);
+router.delete("/food/:foodId", async (req, res) => {
+  try {
+    const {foodId} = req.params;
+
+    const deletedPost = await Post.findOneAndDelete({foodId});
 
     if (!deletedPost) {
       return res.status(404).json({message: "Không tìm thấy bài viết"});

@@ -25,28 +25,37 @@ const Post = require("../../models/post");
  *               items:
  *                 type: object
  *                 properties:
- *                   _id:
- *                     type: string
  *                   user:
+ *                     type: string
+ *                   foodId:
+ *                     type: string
+ *                   foodName:
  *                     type: string
  *                   content:
  *                     type: string
- *                   images:
- *                     type: array
- *                     items:
- *                       type: string
  *                   createdAt:
  *                     type: string
  *                     format: date-time
  *       500:
  *         description: Lỗi server
  */
+
 router.get("/", async (req, res) => {
   try {
     const posts = await Post.find()
       .sort({createdAt: -1})
-      .populate("user", "name email");
-    res.json(posts);
+      .populate("user", "name"); // nếu muốn lấy tên user
+
+    // Chỉ giữ những field cần thiết
+    const formattedPosts = posts.map((post) => ({
+      user: post.user.name || post.user._id, // nếu user chưa populate thì dùng _id
+      foodId: post.foodId,
+      foodName: post.foodName,
+      content: post.content,
+      createdAt: post.createdAt,
+    }));
+
+    res.json(formattedPosts);
   } catch (error) {
     console.error("Lỗi khi lấy bài viết:", error);
     res.status(500).json({error: error.message});
