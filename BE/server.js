@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 // MongoDB Connect
 mongoose
   .connect(process.env.MONGODB_URI, {
-    // Sử dụng biến môi trường
+    dbName: "Food_Suggestions",
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

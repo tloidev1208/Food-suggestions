@@ -6,14 +6,14 @@ const Post = require("../../models/post");
  * @swagger
  * tags:
  *   name: Post
- *   description: Quản lý bài viết
+ *   description: Quản lý bài viết vè món ăn
  */
 
 /**
  * @swagger
  * /api/posts:
  *   get:
- *     summary: Lấy danh sách tất cả bài viết
+ *     summary: Lấy danh sách tất cả bài viết về món ăn
  *     tags: [Post]
  *     responses:
  *       200:
