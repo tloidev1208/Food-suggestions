@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import {usePathname} from "next/navigation";
 import {
   Home,
   Settings,
@@ -21,15 +21,15 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { href: "/", icon: Home, label: "Home" },
-  { href: "/services", icon: Bot, label: "Trợ Lý AI", hot: true },
-  { href: "/activities", icon: Activity, label: "Vận Động", new: true },
-  { href: "/blog", icon: BookOpen, label: "Blog" },
-  { href: "/contact", icon: Mail, label: "Liên hệ" },
-  { href: "/settings", icon: Settings, label: "Settings" },
+  {href: "/", icon: Home, label: "Home"},
+  {href: "/services", icon: Bot, label: "Trợ Lý AI", hot: true},
+  {href: "/activities", icon: Activity, label: "Vận Động", new: true},
+  {href: "/blog", icon: BookOpen, label: "Blog"},
+  {href: "/contact", icon: Mail, label: "Liên hệ"},
+  {href: "/settings", icon: Settings, label: "Settings"},
 ];
 
-export default function Sidebar({ isOpen, toggle }: SidebarProps) {
+export default function Sidebar({isOpen, toggle}: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -69,16 +69,7 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >
-              <div className="relative">
-                <Icon className="w-6 h-6 flex-shrink-0" />
-                {/* collapsed view: small flame badge */}
-                {!isOpen && item.hot && (
-                  <span className="absolute -top-1 -right-1">
-                    <Flame className="w-3 h-3 text-red-500" />
-                  </span>
-                )}
-              </div>
-
+              <Icon className="w-6 h-6 flex-shrink-0" />
               {isOpen && (
                 <div className="flex items-center gap-2">
                   <span className="transition-opacity whitespace-nowrap">
@@ -96,7 +87,7 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
                   {/* NEW badge */}
                   {item.new && (
                     <span className="flex items-center gap-1 bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs font-semibold">
-                     <Flame className="w-3 h-3" />
+                      <Flame className="w-3 h-3" />
                       New
                     </span>
                   )}

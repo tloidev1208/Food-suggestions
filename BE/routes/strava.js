@@ -1,3 +1,6 @@
+//Gm8A4PyuG0B75fnp
+//ngthcgiangvvk_db_user
+
 const express = require("express");
 const axios = require("axios");
 
@@ -32,7 +35,7 @@ const router = express.Router();
 
 router.post("/token", async (req, res) => {
   try {
-    const { client_id, client_secret, refresh_token } = req.body;
+    const {client_id, client_secret, refresh_token} = req.body;
 
     const response = await axios.post("https://www.strava.com/oauth/token", {
       client_id,
@@ -43,7 +46,7 @@ router.post("/token", async (req, res) => {
 
     res.json(response.data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
@@ -66,7 +69,7 @@ router.post("/token", async (req, res) => {
  */
 router.get("/activities", async (req, res) => {
   try {
-    const { access_token } = req.query;
+    const {access_token} = req.query;
 
     const response = await axios.get(
       "https://www.strava.com/api/v3/athlete/activities",
@@ -79,7 +82,7 @@ router.get("/activities", async (req, res) => {
 
     res.json(response.data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
@@ -108,8 +111,8 @@ router.get("/activities", async (req, res) => {
  */
 router.get("/activities/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const { access_token } = req.query;
+    const {id} = req.params;
+    const {access_token} = req.query;
 
     const response = await axios.get(
       `https://www.strava.com/api/v3/activities/${id}`,
@@ -122,7 +125,7 @@ router.get("/activities/:id", async (req, res) => {
 
     res.json(response.data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({error: err.message});
   }
 });
 
