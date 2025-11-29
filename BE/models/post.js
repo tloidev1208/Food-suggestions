@@ -5,11 +5,13 @@ const postSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+    index: true,
   },
 
   foodId: {
     type: String,
-    unique: true, // Đảm bảo không trùng
+    unique: true,
+    index: true,
   },
 
   foodName: {
@@ -24,9 +26,20 @@ const postSchema = new mongoose.Schema({
     trim: true,
   },
 
+  imageUrl: {
+    type: String,
+    default: "",
+  },
+
+  imageId: {
+    type: String,
+    default: "",
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,
+    index: true,
   },
 });
 

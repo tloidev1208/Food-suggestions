@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../../models/post");
+const multer = require("multer");
+const imagekit = require("../../config/imagekit");
+const upload = multer({storage: multer.memoryStorage()});
 
 /**
  * @swagger
@@ -25,7 +28,7 @@ const Post = require("../../models/post");
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -35,6 +38,10 @@ const Post = require("../../models/post");
  *               content:
  *                 type: string
  *                 description: Nội dung bài viết mới
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Ảnh mới để thay thế ảnh cũ
  *     responses:
  *       200:
  *         description: Cập nhật bài viết thành công
@@ -51,6 +58,9 @@ const Post = require("../../models/post");
  *                   type: string
  *                 content:
  *                   type: string
+ *                 imageUrl:
+ *                   type: string
+ *                   example: "https://ik.imagekit.io/xxx/foods/new.jpg"
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -60,40 +70,62 @@ const Post = require("../../models/post");
  *         description: Lỗi server
  */
 
-router.put("/food/:foodId", async (req, res) => {
+router.put("/food/:foodId", upload.single("image"), async (req, res) => {
   try {
     const {foodId} = req.params;
     const {foodName, content} = req.body;
 
-    // Kiểm tra dữ liệu
-    if (!foodName && !content) {
-      return res
-        .status(400)
-        .json({message: "Phải có ít nhất foodName hoặc content để cập nhật"});
+    if (!foodName && !content && !req.file) {
+      return res.status(400).json({
+        message: "Phải có foodName, content hoặc ảnh để cập nhật",
+      });
     }
 
-    const updatedPost = await Post.findOne({foodId});
+    const post = await Post.findOne({foodId});
 
-    if (!updatedPost) {
+    if (!post) {
       return res.status(404).json({message: "Không tìm thấy bài viết"});
     }
 
-    // Cập nhật các trường nếu được gửi
-    if (foodName) updatedPost.foodName = foodName;
-    if (content) updatedPost.content = content;
+    // ✏ Cập nhật text nếu có
+    if (foodName) post.foodName = foodName;
+    if (content) post.content = content;
 
-    await updatedPost.save();
+    // 📸 Nếu upload ảnh mới
+    if (req.file) {
+      // Xóa ảnh cũ trên ImageKit (nếu có)
+      if (post.imageId) {
+        try {
+          await imagekit.deleteFile(post.imageId);
+        } catch (err) {
+          console.log("Không xóa được ảnh cũ:", err.message);
+        }
+      }
 
-    // Trả về dữ liệu đã format
-    const formattedPost = {
-      user: updatedPost.user, // bạn có thể populate nếu muốn tên user
-      foodId: updatedPost.foodId,
-      foodName: updatedPost.foodName,
-      content: updatedPost.content,
-      createdAt: updatedPost.createdAt,
-    };
+      // Upload ảnh mới
+      const result = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: Date.now() + "_" + req.file.originalname,
+        folder: "foods",
+      });
 
-    res.status(200).json(formattedPost);
+      post.imageUrl = result.url;
+      post.imageId = result.fileId;
+    }
+
+    await post.save();
+
+    res.status(200).json({
+      message: "Cập nhật bài viết thành công",
+      data: {
+        user: post.user,
+        foodId: post.foodId,
+        foodName: post.foodName,
+        content: post.content,
+        imageUrl: post.imageUrl,
+        createdAt: post.createdAt,
+      },
+    });
   } catch (error) {
     console.error("Lỗi khi cập nhật bài viết:", error);
     res.status(500).json({error: error.message});

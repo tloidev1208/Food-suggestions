@@ -1,20 +1,3 @@
-const express = require("express");
-const router = express.Router();
-const Post = require("../../models/post");
-const multer = require("multer");
-
-// Cấu hình Multer lưu file tạm (hoặc memoryStorage nếu không muốn lưu)
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/"); // folder lưu file
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "_" + file.originalname;
-    cb(null, uniqueSuffix);
-  },
-});
-
-const upload = multer({storage});
 /**
  * @swagger
  * tags:
@@ -41,11 +24,18 @@ const upload = multer({storage});
  *             properties:
  *               userId:
  *                 type: string
+ *                 example: "655abc123456"
  *               foodName:
  *                 type: string
+ *                 example: "Phở bò"
  *               content:
  *                 type: string
-
+ *                 example: "Món ăn rất ngon"
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Ảnh món ăn upload lên ImageKit
+ *
  *     responses:
  *       201:
  *         description: Bài viết được tạo thành công
@@ -64,15 +54,27 @@ const upload = multer({storage});
  *                   type: string
  *                 content:
  *                   type: string
- *               
+ *                 imageUrl:
+ *                   type: string
+ *                   example: "https://ik.imagekit.io/xxx/foods/pho.jpg"
  *                 createdAt:
  *                   type: string
  *                   format: date-time
  *       400:
- *         description: Thiếu userId, foodName hoặc content
+ *         description: Thiếu dữ liệu
  *       500:
  *         description: Lỗi server
  */
+
+const express = require("express");
+const router = express.Router();
+const Post = require("../../models/post");
+const multer = require("multer");
+const imagekit = require("../../config/imagekit");
+
+// MULTER: upload vào RAM
+const upload = multer({storage: multer.memoryStorage()});
+
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const {userId, content, foodName} = req.body;
@@ -83,16 +85,35 @@ router.post("/", upload.single("image"), async (req, res) => {
       });
     }
 
+    let imageUrl = "";
+    let imageId = "";
+
+    // Nếu có file thì upload ImageKit
+    if (req.file) {
+      const result = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: Date.now() + "_" + req.file.originalname,
+        folder: "foods",
+      });
+
+      imageUrl = result.url;
+      imageId = result.fileId;
+    }
+
     const count = await Post.countDocuments({user: userId});
     const foodId = `${userId}_${count + 1}`;
+
     const post = new Post({
       user: userId,
       foodId,
       foodName,
       content,
+      imageUrl,
+      imageId,
     });
 
     await post.save();
+
     res.status(201).json(post);
   } catch (error) {
     console.error("Lỗi khi tạo bài viết:", error);

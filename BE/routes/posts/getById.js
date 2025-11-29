@@ -38,6 +38,9 @@ const Post = require("../../models/post");
  *                   type: string
  *                 content:
  *                   type: string
+ *                 imageUrl:
+ *                   type: string
+ *                   example: "https://ik.imagekit.io/xxx/foods/pho.jpg"
  *                 createdAt:
  *                   type: string
  *                   format: date-time
@@ -63,6 +66,7 @@ router.get("/food/:foodId", async (req, res) => {
       foodName: post.foodName,
       content: post.content,
       createdAt: post.createdAt,
+      imageUrl: post.imageUrl,
     };
 
     res.status(200).json(formattedPost);

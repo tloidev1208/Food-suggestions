@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../../models/post");
-
+const imagekit = require("../../config/imagekit");
 /**
  * @swagger
  * tags:
@@ -43,13 +43,22 @@ router.delete("/food/:foodId", async (req, res) => {
   try {
     const {foodId} = req.params;
 
-    const deletedPost = await Post.findOneAndDelete({foodId});
+    // Tìm post trước
+    const post = await Post.findOne({foodId});
 
-    if (!deletedPost) {
+    if (!post) {
       return res.status(404).json({message: "Không tìm thấy bài viết"});
     }
 
-    res.json({message: "Xóa bài viết thành công!"});
+    // Nếu có ảnh → xóa trên ImageKit
+    if (post.imageId) {
+      await imagekit.deleteFile(post.imageId);
+    }
+
+    // Xóa trong MongoDB
+    await Post.deleteOne({foodId});
+
+    res.json({message: "Xóa bài viết và ảnh thành công!"});
   } catch (error) {
     console.error("Lỗi khi xóa bài viết:", error);
     res.status(500).json({error: error.message});

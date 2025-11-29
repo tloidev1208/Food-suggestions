@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../../models/post");
+const {image} = require("../../config/cloudinary");
 
 /**
  * @swagger
@@ -53,6 +54,7 @@ router.get("/", async (req, res) => {
       foodName: post.foodName,
       content: post.content,
       createdAt: post.createdAt,
+      imageUrl: post.imageUrl,
     }));
 
     res.json(formattedPosts);
