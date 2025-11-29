@@ -80,27 +80,7 @@ export default function HomeHeader() {
         </div>
       </div>
 
-      {/* Nấu gì hôm nay */}
-      <div className="mt-12">
-        <h2 className="text-3xl font-bold mb-6">Nấu gì hôm nay?</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dishesToday.map((dish, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
-              onClick={() => setSelectedDish(dish)}
-            >
-              <div className="relative w-full h-48">
-                <Image src={dish.image} alt={dish.name} fill className="object-cover" />
-              </div>
-              <div className="p-4">
-                <h3 className="font-bold text-lg">{dish.name}</h3>
-                <p className="text-gray-500 mt-1">{dish.time}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+     
 
       {/* Popup hiển thị chi tiết món ăn */}
       {selectedDish && (

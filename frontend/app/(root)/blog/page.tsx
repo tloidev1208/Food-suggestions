@@ -63,7 +63,7 @@ export default function BlogPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 px-4 lg:px-12">
+    <div className="min-h-screen  pt-24 px-4 lg:px-12">
       <div className="max-w-xl mx-auto mb-6">
 
         {/* Tiêu đề form */}
