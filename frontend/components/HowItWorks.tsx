@@ -7,14 +7,14 @@ import { Sparkles } from "lucide-react";
 
 export default function HowItWorks() {
   const dummyFoods = [
-    { id: 1, name: "Gà kho gừng", img: "/food1.jpg" },
-    { id: 2, name: "Bò xào ớt chuông", img: "/food2.jpg" },
-    { id: 3, name: "Cơm chiên trứng", img: "/food3.jpg" },
-    { id: 4, name: "Canh chua cá", img: "/food4.jpg" },
+    { id: 1, name: "Gà kho gừng", img: "/2.avif" },
+    { id: 2, name: "Bò xào ớt chuông", img: "/3.avif" },
+    { id: 3, name: "Cơm chiên trứng", img: "/3.avif" },
+    { id: 4, name: "Canh chua cá", img: "/2.avif" },
   ];
 
   return (
-    <div className="bg-white py-16 px-4 md:px-8 lg:px-16 text-black max-w-full mx-auto">
+    <div className="bg-white py-16 px-4 md:px-8  text-black max-w-7xl mx-auto">
       <div className="grid grid-cols-4 grid-rows-4 gap-4">
         {/* ========================== THẺ 1 ========================== */}
         <div className="col-span-4 p-6 rounded-2xl bg-gradient-to-r from-orange-300 to-orange-100 flex flex-col gap-4 relative overflow-hidden">
@@ -24,7 +24,7 @@ export default function HowItWorks() {
           <div className="flex items-center gap-4">
             <div className="relative w-32 h-32 rounded-xl overflow-hidden">
               <Image
-                src="/food1.jpg"
+                src="/2.avif"
                 fill
                 alt="suggestion"
                 className="object-cover"
