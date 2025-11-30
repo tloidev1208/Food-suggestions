@@ -26,7 +26,7 @@ const navItems = [
   { href: "/activities", icon: Activity, label: "Vận Động", new: true },
   { href: "/blog", icon: BookOpen, label: "Chia sẻ món ăn" },
   { href: "/contact", icon: Mail, label: "Liên hệ" },
-  //{ href: "/settings", icon: Settings, label: "Settings" },
+  { href: "/settings", icon: Settings, label: "Settings" },
 ];
 
 export default function Sidebar({ isOpen, toggle }: SidebarProps) {
