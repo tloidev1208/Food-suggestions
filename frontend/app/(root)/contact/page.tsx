@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Facebook, Instagram } from "lucide-react";
 
 const Contact = () => {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-8">
+    <div className="flex flex-col items-center justify-center px-4 mt-16 bg-gradient-to-b from-orange-50 to-white">
       <h1 className="text-3xl font-bold text-red-600 mb-2">Liên hệ với chúng tôi</h1>
       <p className="text-gray-600 mb-6 text-center max-w-lg">
         Nếu bạn có bất kỳ thắc mắc nào về dinh dưỡng, món ăn hoặc dịch vụ của NutriAI,

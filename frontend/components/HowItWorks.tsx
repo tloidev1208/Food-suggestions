@@ -14,7 +14,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <div className="bg-white py-16 px-4 md:px-8  text-black max-w-7xl mx-auto">
+    <div className="bg-gradient-to-b from-orange-50 to-white py-16 px-4 md:px-8  text-black max-w-7xl mx-auto">
       <div className="grid grid-cols-4 grid-rows-4 gap-4">
         {/* ========================== THẺ 1 ========================== */}
         <div className="col-span-4 p-6 rounded-2xl bg-gradient-to-r from-orange-300 to-orange-100 flex flex-col gap-4 relative overflow-hidden">
