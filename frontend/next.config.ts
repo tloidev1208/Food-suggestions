@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "example.com", // Domain chứa ảnh
         pathname: "/**", // Cho phép tất cả đường dẫn
       },
+      {
+        protocol: "https",
+        hostname: "ik.imagekit.io", // Thêm hostname của ImageKit
+        pathname: "/**", // Cho phép tất cả đường dẫn
+      },
     ],
   },
 };
