@@ -23,8 +23,7 @@ app.add_middleware(
 model = TFSMLayer("./model.savedmodel", call_endpoint="serving_default")
 
 # ⚠️ Thay bằng label thật mà bạn train
-labels = ["Ba khía", "Bánh đúc nóng", "Bánh mì", "Bánh canh giò heo", "Bò kho", "Bò lá lốt", "Bún bò huế", "Bún chả", "Bún mắm", "Bún ốc", "Tôm nướng", "Cá kho tộ", "Cá lóc nướng", "Cá viên chiên", "Canh chua", "Cháo ếch", "Chân gà sốt thái", "Cơm cháy kho quẹt", "Cơm chiên dương châu", "Cơm tấm", "Cua rang me", "Gà nướng", "Gỏi gà măng cụt", "Hủ tiếu", "Khổ qua dồn thịt", "Kim bắp", "Lẩu gà lá é", "Mắm trưng", "Mì quảng", "Mì tương đen", "Mực xào sa tế", "Nem chua", "Ốc nướng tiêu xanh", "Thịt heo quay", "Phở", "Thịt kho trứng", "Tokbokki", "Tré trộn", "Xôi xéo", "Bánh bột lọc", "Thịt vịt quay", "Cá nục kho cà", "Đậu hũ nhồi thịt", "Mì xào bò", "Mì cay", "Súp cua", "Bánh cuốn nóng", "Bánh tráng nướng", "Bánh xèo miền tây", "Mực dồn thịt"]
-
+labels = [ "Bánh mì", "Phở",  "Cơm tấm"]
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
