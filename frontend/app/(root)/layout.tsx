@@ -1,6 +1,5 @@
 "use client";
 
-import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { ReactNode, useState } from "react";
@@ -18,15 +17,15 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
         {/* Nội dung chính */}
         <div
-          className={`transition-all duration-300 flex-1 px-6 ${
-            isOpen ? "ml-64" : "ml-20"
+          className={`transition-all duration-300 flex-1 px-1 ${
+            isOpen ? "ml-52" : "ml-[75px]"
           }`}
         >
           {children}
         </div>
       </div>
 
-      <Footer />
+     
     </main>
   );
 };
