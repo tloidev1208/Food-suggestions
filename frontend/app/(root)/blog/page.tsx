@@ -63,7 +63,7 @@ export default function BlogPage() {
     <div className="min-h-screen pt-24 px-4 lg:px-12 bg-gradient-to-b from-orange-50 to-white">
       <div className="max-w-6xl mx-auto mb-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* RIGHT SIDE – FORM */}
-        <div className="bg-white p-7 rounded-2xl shadow-lg border border-orange-100 h-fit mt-13">
+        <div className="bg-white p-7 rounded-2xl shadow-lg border border-orange-100 h-fit mt-14">
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
             {/* Tên món ăn */}
             <div>
