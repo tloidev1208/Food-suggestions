@@ -23,7 +23,7 @@ app.add_middleware(
 model = TFSMLayer("./model.savedmodel", call_endpoint="serving_default")
 
 # ⚠️ Thay bằng label thật mà bạn train
-labels = [ "Bánh mì", "Phở",  "Cơm tấm"]
+labels = [ "Cơm tấm","Phở","Bánh mì"]
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
