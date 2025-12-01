@@ -40,31 +40,8 @@ export default function AdminPage() {
 
   // Xóa bài viết
   const handleDelete = async (foodId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return;
+   alert("Chức năng xóa sẽ làm sau\nFood ID: " + foodId);
 
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/posts/${foodId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) {
-        alert("Xóa thất bại!");
-        return;
-      }
-
-      alert("Xóa thành công!");
-      setPosts(posts.filter((post) => post.foodId !== foodId));
-    } catch (err) {
-      alert("Lỗi khi xóa bài viết");
-      console.error(err);
-    }
   };
 
   // Sửa bài viết
