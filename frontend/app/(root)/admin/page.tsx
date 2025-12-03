@@ -15,6 +15,13 @@ export default function AdminPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // --- STATE CHO SỬA BÀI VIẾT ---
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  const [editFoodName, setEditFoodName] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editImage, setEditImage] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   // Fetch dữ liệu từ API
   const fetchPosts = async () => {
     try {
@@ -40,18 +47,90 @@ export default function AdminPage() {
 
   // Xóa bài viết
   const handleDelete = async (foodId: string) => {
-   alert("Chức năng xóa sẽ làm sau\nFood ID: " + foodId);
+    if (!confirm("Bạn có chắc muốn xóa bài viết này?")) return;
 
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/posts/food/${foodId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        alert("Xóa thất bại!");
+        return;
+      }
+
+      setPosts((prev) => prev.filter((p) => p.foodId !== foodId));
+      alert("Xóa bài viết thành công!");
+    } catch (err) {
+      console.error(err);
+      alert("Lỗi kết nối server!");
+    }
   };
 
-  // Sửa bài viết
+  // ---------------------------
+  // MỞ POPUP SỬA BÀI VIẾT
+  // ---------------------------
   const handleEdit = (foodId: string) => {
-    alert("Chức năng sửa sẽ làm sau\nFood ID: " + foodId);
+    const post = posts.find((p) => p.foodId === foodId);
+    if (!post) return;
+
+    setEditingPost(post);
+    setEditFoodName(post.foodName);
+    setEditContent(post.content);
+    setPreviewImage(post.imageUrl);
+    setEditImage(null);
+  };
+
+  // ---------------------------
+  // GỬI API CẬP NHẬT
+  // ---------------------------
+  const submitEdit = async () => {
+    if (!editingPost) return;
+
+    const formData = new FormData();
+    formData.append("foodName", editFoodName);
+    formData.append("content", editContent);
+
+    if (editImage) {
+      formData.append("image", editImage);
+    }
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/posts/food/${editingPost.foodId}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      if (!res.ok) {
+        alert("Cập nhật thất bại!");
+        return;
+      }
+
+      alert("Cập nhật thành công!");
+
+      // Load lại danh sách
+      fetchPosts();
+      setEditingPost(null);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật:", error);
+      alert("Lỗi kết nối server!");
+    }
   };
 
   return (
     <div className="p-8 mt-12">
-      <h1 className="text-3xl font-bold mb-6 text-gray-700">Quản lý bài đăng</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-700">
+        Quản lý bài đăng
+      </h1>
 
       {loading ? (
         <p className="text-gray-500">Đang tải dữ liệu...</p>
@@ -106,6 +185,65 @@ export default function AdminPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* ----------------------- */}
+      {/* FORM SỬA BÀI VIẾT (POPUP) */}
+      {/* ----------------------- */}
+      {editingPost && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-[450px] shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Sửa bài viết</h2>
+
+            <label className="block mb-2 font-semibold">Tên món</label>
+            <input
+              className="w-full border px-3 py-2 rounded mb-4"
+              value={editFoodName}
+              onChange={(e) => setEditFoodName(e.target.value)}
+            />
+
+            <label className="block mb-2 font-semibold">Nội dung</label>
+            <textarea
+              className="w-full border px-3 py-2 rounded mb-4"
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+            />
+
+            <label className="block mb-2 font-semibold">Ảnh mới</label>
+            <input
+              type="file"
+              className="mb-4"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                setEditImage(file);
+                if (file) setPreviewImage(URL.createObjectURL(file));
+              }}
+            />
+
+            {previewImage && (
+              <img
+                src={previewImage}
+                className="w-full h-40 object-cover rounded mb-4"
+              />
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setEditingPost(null)}
+              >
+                Hủy
+              </button>
+
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                onClick={submitEdit}
+              >
+                Lưu thay đổi
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
