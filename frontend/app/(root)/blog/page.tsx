@@ -32,26 +32,59 @@ export default function BlogPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // ============================================================
+  // 🔥 HANDLE SUBMIT API
+  // ============================================================
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!name || !image || !description) {
       alert("Vui lòng nhập đầy đủ thông tin!");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
+    // Tạo FormData gửi API
+    const formData = new FormData();
+    formData.append("userId", "692c5eb3fb0fe4bb9623ca2e"); // thay ID thật nếu có login
+    formData.append("foodName", name);
+    formData.append("content", description);
+    formData.append("image", image);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/posts", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      console.log("API Response:", data);
+
+      if (!res.ok) {
+        alert("Lỗi khi đăng bài!");
+        return;
+      }
+
+      // Thêm bài mới vào UI
       setPosts([
         ...posts,
-        { name, image: reader.result as string, description },
+        {
+          name: data.foodName,
+          image: data.imageUrl, // URL ảnh từ server
+          description: data.content,
+        },
       ]);
+
       handleReset();
       setOpenPopup(true);
-    };
-
-    if (image) reader.readAsDataURL(image);
+    } catch (error) {
+      console.error("Lỗi API:", error);
+      alert("Không thể kết nối server!");
+    }
   };
 
+  // ============================================================
+  // RESET FORM
+  // ============================================================
   const handleReset = () => {
     setName("");
     setImage(null);
@@ -127,6 +160,7 @@ export default function BlogPage() {
             </div>
           </form>
         </div>
+
         {/* LEFT SIDE – text + banner */}
         <div className="flex flex-col justify-center">
           <h2 className="text-4xl font-bold mb-4 text-gray-800">
