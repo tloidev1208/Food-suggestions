@@ -17,11 +17,12 @@ const serpImagesRouter = require("./routes/serpImages");
 const mealPlannerRoutes = require("./routes/mealPlanner");
 const nutritionRoutes = require("./routes/nutritionAdvice");
 const stravaRoutes = require("./routes/strava");
-const createpost = require("./routes/posts/createpost");
+const createpost = require("./routes/posts/createPost");
 const deletepost = require("./routes/posts/deletepost");
 const getAllPost = require("./routes/posts/getAllPost");
 const getById = require("./routes/posts/getById");
 const updatepost = require("./routes/posts/update");
+const logoutRoute = require("./routes/logout");
 
 const app = express();
 const PORT = process.env.PORT || 5000; // Cho phép cấu hình PORT qua env
@@ -60,6 +61,7 @@ app.use("/api/recipes", nutritionRoutes);
 app.use("/strava", stravaRoutes);
 app.use("/api/serp-images", serpImagesRouter);
 app.use("/api/posts", updatepost);
+app.use("/api/logout", logoutRoute);
 
 // Swagger Docs
 swaggerDocs(app);

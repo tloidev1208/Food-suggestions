@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LogOut, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
+  const router = useRouter();
   const [user, setUser] = useState<{ name: string; avatar?: string } | null>(null);
   const [search, setSearch] = useState("");
 
@@ -18,8 +20,27 @@ const Header = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Xử lý tìm kiếm ở đây, ví dụ chuyển trang hoặc gọi API
     alert(`Tìm kiếm: ${search}`);
+  };
+
+  const handleLogout = async () => {
+    try {
+      // 1. Gọi API logout backend (nếu có session hoặc cookie)
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include", // nếu backend dùng cookie
+      });
+
+      // 2. Xóa user + token client-side
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      setUser(null);
+
+      // 3. Redirect về trang đăng nhập
+      router.push("/sign-in");
+    } catch (err) {
+      console.error("Logout thất bại:", err);
+    }
   };
 
   return (
@@ -51,7 +72,7 @@ const Header = () => {
           </button>
         </form>
 
-        {/* User info bên phải, đóng khung bo góc */}
+        {/* User info bên phải */}
         <div className="hidden lg:flex gap-4 z-10 items-center">
           <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 flex items-center gap-3 shadow">
             {user ? (
@@ -61,17 +82,12 @@ const Header = () => {
                     src={user.avatar || "https://randomuser.me/api/portraits/men/32.jpg"}
                     alt={user.name}
                   />
-                  <AvatarFallback>
-                    {user.name?.[0] || "U"}
-                  </AvatarFallback>
+                  <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
                 </Avatar>
                 <p className="text-red-500 font-semibold">{user.name}!</p>
                 <button
                   className="px-2 py-1 border border-red-500 text-red-500 rounded cursor-pointer hover:bg-red-50 flex items-center gap-2"
-                  onClick={() => {
-                    localStorage.removeItem("user");
-                    setUser(null);
-                  }}
+                  onClick={handleLogout} // <-- gọi hàm logout ở đây
                 >
                   <LogOut className="w-5 h-5" />
                 </button>

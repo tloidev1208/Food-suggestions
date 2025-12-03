@@ -5,6 +5,7 @@ import Image from "next/image";
 import { RefreshCw, Sparkles } from "lucide-react";
 
 interface Post {
+  _id?: string;
   user: string;
   foodId: string;
   foodName: string;
@@ -153,37 +154,36 @@ export default function HowItWorks() {
 }
 
 /* ------------------ COMPONENT GRID MÓN ĂN ------------------- */
-function FoodGrid({ foods }: { foods: Post[] }) {
+function FoodGrid({ foods, gridKey = "g" }: { foods: Post[]; gridKey?: string }) {
   return (
     <div>
       <div className="grid grid-cols-4 gap-4">
-        {foods.map((food: Post, index: number) => (
-          <div
-            key={food.foodId ?? index}
-            className="flex flex-col items-center text-center"
-          >
-            {/* Image */}
-            <div className="relative w-full h-48 rounded-xl overflow-hidden shadow">
-              <Image
-                src={food.imageUrl || "/placeholder.jpg"}
-                fill
-                alt={food.foodName || "food"}
-                className="object-cover"
-              />
-            </div>
+        {foods.map((food, idx) => {
+          const stableId = food._id ?? food.foodId ?? `${food.foodName ?? "food"}-${idx}`;
+          const key = `${stableId}-${gridKey}-${idx}`;
+          return (
+            <div key={key} className="flex flex-col items-center text-center">
+              <div className="relative w-full h-48 rounded-xl overflow-hidden shadow">
+                <Image
+                  src={food.imageUrl || "/placeholder.jpg"}
+                  fill
+                  alt={food.foodName || "food"}
+                  className="object-cover"
+                />
+              </div>
 
-            {/* Name */}
-            <p className="mt-2 text-base font-semibold text-orange-700">
-              {food.foodName}
-            </p>
-            {/* User */}
-            {food.user && (
-              <p className="mt-1 text-[11px] text-gray-500 italic">
-                Đăng bởi: {food.user}
+              <p className="mt-2 text-base font-semibold text-orange-700">
+                {food.foodName}
               </p>
-            )}
-          </div>
-        ))}
+
+              {food.user && (
+                <p className="mt-1 text-[11px] text-gray-500 italic">
+                  Đăng bởi: {food.user}
+                </p>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

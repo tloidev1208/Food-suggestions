@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 interface Post {
+  _id?: string;
   user: string;
   foodId: string;
   foodName: string;
@@ -33,7 +34,15 @@ export default function AdminPage() {
       });
 
       const data = await res.json();
-      setPosts(data);
+
+      // dedupe by _id if available, otherwise by composite key foodId+createdAt
+      const map = new Map<string, Post>();
+      (data || []).forEach((p: Post) => {
+        const key = p._id ?? `${p.foodId}-${p.createdAt}`;
+        if (!map.has(key)) map.set(key, p);
+      });
+      const unique = Array.from(map.values());
+      setPosts(unique);
     } catch (error) {
       console.error("Lỗi fetch posts:", error);
     } finally {
@@ -151,38 +160,41 @@ export default function AdminPage() {
             </thead>
 
             <tbody>
-              {posts.map((post) => (
-                <tr key={post.foodId} className="hover:bg-gray-50">
-                  <td className="p-3 border">
-                    <img
-                      src={post.imageUrl}
-                      alt={post.foodName}
-                      className="w-20 h-20 object-cover rounded-md"
-                    />
-                  </td>
-                  <td className="p-3 border font-semibold">{post.foodName}</td>
-                  <td className="p-3 border">{post.content}</td>
-                  <td className="p-3 border">{post.user}</td>
-                  <td className="p-3 border">
-                    {new Date(post.createdAt).toLocaleString()}
-                  </td>
-                  <td className="p-3 border text-center">
-                    <button
-                      className="px-3 py-1 bg-blue-500 text-white rounded-md mr-2 hover:bg-blue-600"
-                      onClick={() => handleEdit(post.foodId)}
-                    >
-                      Sửa
-                    </button>
+              {posts.map((post, idx) => {
+                const rowKey = post._id ?? `${post.foodId}-${post.createdAt ?? idx}`;
+                return (
+                  <tr key={rowKey} className="hover:bg-gray-50">
+                    <td className="p-3 border">
+                      <img
+                        src={post.imageUrl}
+                        alt={post.foodName}
+                        className="w-20 h-20 object-cover rounded-md"
+                      />
+                    </td>
+                    <td className="p-3 border font-semibold">{post.foodName}</td>
+                    <td className="p-3 border">{post.content}</td>
+                    <td className="p-3 border">{post.user}</td>
+                    <td className="p-3 border">
+                      {new Date(post.createdAt).toLocaleString()}
+                    </td>
+                    <td className="p-3 border text-center">
+                      <button
+                        className="px-3 py-1 bg-blue-500 text-white rounded-md mr-2 hover:bg-blue-600"
+                        onClick={() => handleEdit(post.foodId)}
+                      >
+                        Sửa
+                      </button>
 
-                    <button
-                      className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                      onClick={() => handleDelete(post.foodId)}
-                    >
-                      Xóa
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                      <button
+                        className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                        onClick={() => handleDelete(post.foodId)}
+                      >
+                        Xóa
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

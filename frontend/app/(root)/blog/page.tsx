@@ -19,6 +19,7 @@ export default function BlogPage() {
   const [description, setDescription] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -37,9 +38,13 @@ export default function BlogPage() {
   // ============================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return; // guard double-submit
+    setLoading(true);
+    console.log("handleSubmit start");
 
     if (!name || !image || !description) {
       alert("Vui lòng nhập đầy đủ thông tin!");
+      setLoading(false);
       return;
     }
 
@@ -56,29 +61,40 @@ export default function BlogPage() {
         body: formData,
       });
 
+      console.log("POST status", res.status);
       const data = await res.json();
       console.log("API Response:", data);
 
       if (!res.ok) {
         alert("Lỗi khi đăng bài!");
+        setLoading(false);
         return;
       }
 
-      // Thêm bài mới vào UI
-      setPosts([
-        ...posts,
-        {
-          name: data.foodName,
-          image: data.imageUrl, // URL ảnh từ server
-          description: data.content,
-        },
-      ]);
+      // tránh duplicate: kiểm tra đã có post cùng imageUrl hoặc foodName gần giống
+      const exists = posts.some(
+        (p) => p.image === data.imageUrl || p.name === data.foodName
+      );
+      if (!exists) {
+        setPosts((prev) => [
+          ...prev,
+          {
+            name: data.foodName,
+            image: data.imageUrl,
+            description: data.content,
+          },
+        ]);
+      } else {
+        console.warn("Duplicate post avoided in UI");
+      }
 
       handleReset();
       setOpenPopup(true);
     } catch (error) {
       console.error("Lỗi API:", error);
       alert("Không thể kết nối server!");
+    } finally {
+      setLoading(false);
     }
   };
 
