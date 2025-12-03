@@ -22,6 +22,14 @@ interface SidebarProps {
   toggle: () => void;
 }
 
+// định nghĩa kiểu user thay vì dùng `any`
+interface UserType {
+  id?: string;
+  name?: string;
+  avatar?: string;
+  [key: string]: unknown;
+}
+
 const BASE_NAV_ITEMS = [
   { href: "/", icon: Home, label: "Trang chủ" },
   { href: "/services", icon: Bot, label: "Trợ Lý AI", hot: true },
@@ -35,7 +43,7 @@ const ADMIN_ID = "692c5eb3fb0fe4bb9623ca2e";
 
 export default function Sidebar({ isOpen, toggle }: SidebarProps) {
   const pathname = usePathname();
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
 
   // Load user from localStorage
   useEffect(() => {
@@ -62,7 +70,7 @@ export default function Sidebar({ isOpen, toggle }: SidebarProps) {
         bg-white shadow-lg border-r
         flex flex-col justify-between
         transition-all duration-300 z-50
-        ${isOpen ? "w-58" : "w-20"}
+        ${isOpen ? "w-56" : "w-20"}
       `}
     >
       {/* Logo */}
