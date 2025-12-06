@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Recipe = require("../models/recipe");
-
+const imagekit = require("../config/imagekit");
 /**
  * @swagger
  * /api/recipes/save:
@@ -18,6 +18,7 @@ const Recipe = require("../models/recipe");
  *             properties:
  *               userId:
  *                 type: string
+ *                 example: "692874fcf8589fcd7883cbcb"
  *               recipe:
  *                 type: object
  *                 properties:
@@ -34,7 +35,7 @@ const Recipe = require("../models/recipe");
  *                     example: "Cắt cà chua, trộn với hành tây và rau thơm. Thêm gia vị vừa ăn."
  *                   image:
  *                     type: string
- *                     example: "https://example.com/salad.jpg"
+ *                     example: "https://images.unsplash.com/photo-1528825871115-3581a5387919"
  *                   cook_time:
  *                     type: string
  *                     example: "30 phút"
@@ -61,19 +62,37 @@ router.post("/save", async (req, res) => {
   try {
     const {userId, recipe} = req.body;
 
-    // 🔍 Kiểm tra người dùng tồn tại
+    if (!userId || !recipe) {
+      return res.status(400).json({error: "Thiếu userId hoặc recipe"});
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({error: "Không tìm thấy người dùng"});
     }
 
-    // ✅ Tạo công thức mới
+    let imageUrl = "";
+    let imageId = "";
+
+    if (recipe.image && recipe.image.startsWith("http")) {
+      const result = await imagekit.upload({
+        file: recipe.image,
+        fileName: `recipe-${Date.now()}.jpg`,
+        folder: "recipes",
+      });
+
+      imageUrl = result.url;
+      imageId = result.fileId;
+    }
+
     const newRecipe = await Recipe.create({
+      user: userId,
       name: recipe.name,
-      ingredients: recipe.ingredients,
-      instructions: recipe.instructions,
-      image: recipe.image,
-      cook_time: recipe.cook_time,
+      ingredients: recipe.ingredients || [],
+      instructions: recipe.instructions || "",
+      image: imageUrl,
+      imageId,
+      cook_time: recipe.cook_time || "",
       nutrition: {
         calories: recipe.nutrition?.calories || "Không rõ",
         protein: recipe.nutrition?.protein || "Không rõ",
@@ -82,15 +101,15 @@ router.post("/save", async (req, res) => {
       },
     });
 
-    // ✅ Lưu công thức này vào tài khoản người dùng
     user.savedRecipes.push(newRecipe._id);
     await user.save();
 
-    res.json({
-      message: "Đã lưu công thức vào tài khoản",
+    res.status(201).json({
+      message: "Lưu thành công & upload ảnh ImageKit",
       recipe: newRecipe,
     });
   } catch (error) {
+    console.error("Lỗi lưu recipe:", error);
     res.status(500).json({error: error.message});
   }
 });

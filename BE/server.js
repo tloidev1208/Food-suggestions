@@ -23,7 +23,7 @@ const getAllPost = require("./routes/posts/getAllPost");
 const getById = require("./routes/posts/getById");
 const updatepost = require("./routes/posts/update");
 const logoutRoute = require("./routes/logout");
-
+const recipeSaveRoutes = require("./routes/recipesave");
 const app = express();
 const PORT = process.env.PORT || 5000; // Cho phép cấu hình PORT qua env
 app.use(cors());
@@ -62,6 +62,7 @@ app.use("/strava", stravaRoutes);
 app.use("/api/serp-images", serpImagesRouter);
 app.use("/api/posts", updatepost);
 app.use("/api/logout", logoutRoute);
+app.use("/api/recipes", recipeSaveRoutes);
 
 // Swagger Docs
 swaggerDocs(app);
