@@ -4,33 +4,39 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { RefreshCw, Sparkles } from "lucide-react";
 
+import RecipeModal from "@/components/RecipeModal";
+import PostModal from "@/components/PostModal";
+
 interface Post {
   _id?: string;
-  user: string;
-  foodId: string;
-  foodName: string;
+  user?: string;
+  foodId?: string;
+  foodName?: string;
   content?: string;
   createdAt?: string;
   imageUrl?: string;
+  name?: string;
+  image?: string;
 }
 
 export default function HowItWorks() {
   const [foodPosts, setFoodPosts] = useState<Post[]>([]);
+  const [savedRecipes, setSavedRecipes] = useState<Post[]>([]);
+  const [allFoods, setAllFoods] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [suggestion, setSuggestion] = useState<Post | null>(null);
 
+  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null); // popup AI
+  const [selectedPost, setSelectedPost] = useState<any | null>(null); // popup user
+
+  /* FETCH POSTS */
   useEffect(() => {
     async function fetchPosts() {
       try {
         setLoading(true);
         const res = await fetch("http://localhost:5000/api/posts");
-        if (!res.ok) throw new Error("Fetch posts failed");
         const data = (await res.json()) as Post[];
         setFoodPosts(data || []);
-        // pick initial random suggestion
-        if (data && data.length > 0) {
-          setSuggestion(data[Math.floor(Math.random() * data.length)]);
-        }
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
@@ -41,145 +47,188 @@ export default function HowItWorks() {
     fetchPosts();
   }, []);
 
+  /* FETCH RECIPES */
+  useEffect(() => {
+    async function fetchRecipes() {
+      try {
+        const res = await fetch("http://localhost:5000/api/recipes/saved");
+        const data = await res.json();
+
+        const list: any[] = Array.isArray(data)
+          ? data
+          : Array.isArray(data.recipes)
+          ? data.recipes
+          : Array.isArray(data.savedRecipes)
+          ? data.savedRecipes
+          : [];
+
+        setSavedRecipes(list);
+      } catch {
+        setSavedRecipes([]);
+      }
+    }
+
+    fetchRecipes();
+  }, []);
+
+  /* GỘP */
+  useEffect(() => {
+    const combined = [...foodPosts, ...savedRecipes];
+    setAllFoods(combined);
+
+    if (combined.length > 0) {
+      setSuggestion(combined[Math.floor(Math.random() * combined.length)]);
+    }
+  }, [foodPosts, savedRecipes]);
+
   const handleRandomize = () => {
-    if (!foodPosts || foodPosts.length === 0) return;
-    const next = foodPosts[Math.floor(Math.random() * foodPosts.length)];
+    if (!allFoods.length) return;
+    const next = allFoods[Math.floor(Math.random() * allFoods.length)];
     setSuggestion(next);
+  };
+
+  /* CLICK MÓN AI */
+  const handleClickAIFood = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/recipes/${id}`);
+      const data = await res.json();
+      setSelectedRecipe(data);
+    } catch (err) {
+      console.error("Không thể tải recipe:", err);
+    }
+  };
+
+  /* CLICK MÓN USER */
+  const handleClickUserFood = async (foodId: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/posts/food/${foodId}`);
+      const data = await res.json();
+      setSelectedPost(data);
+    } catch (err) {
+      console.error("Không thể tải post user:", err);
+    }
   };
 
   return (
     <div className="py-2 px-4 md:px-8 text-black max-w-7xl mx-auto">
-      <div className="col-span-4 p-6 rounded-2xl bg-gradient-to-r from-orange-300 to-orange-100 flex flex-col gap-4 relative overflow-hidden">
+      {/* 2 POPUP */}
+      <RecipeModal recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
+      <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+
+      <div className="col-span-4 p-6 rounded-2xl bg-gradient-to-r from-orange-300 to-orange-100 flex flex-col gap-4">
         <h2 className="text-3xl font-bold">Nấu gì hôm nay?</h2>
 
-        {/* gợi ý món */}
         <div className="flex items-center gap-4">
+          {/* IMAGE */}
           <div className="relative w-32 h-32 rounded-xl overflow-hidden">
-            {loading ? (
-              <div className="w-full h-full bg-gray-200 animate-pulse" />
-            ) : suggestion?.imageUrl ? (
-              <Image
-                src={suggestion.imageUrl}
-                fill
-                alt={suggestion.foodName}
-                className="object-cover"
-              />
-            ) : (
-              <Image
-                src="/2.avif"
-                fill
-                alt="suggestion"
-                className="object-cover"
-              />
-            )}
+            <Image
+              src={suggestion?.image || suggestion?.imageUrl || "/2.avif"}
+              fill
+              alt=""
+              className="object-cover"
+            />
           </div>
 
+          {/* TEXT */}
           <div className="flex-grow flex flex-col">
-            <p className="text-xl font-semibold leading-tight">
-              Gợi ý:{" "}
-              {loading
-                ? "Đang tải..."
-                : suggestion?.foodName || "Không có dữ liệu"}
+            <p className="text-xl font-semibold">
+              Gợi ý: {suggestion?.foodName || suggestion?.name}
             </p>
-
-            {/* content mô tả món ăn */}
-            {suggestion?.content && (
-              <p className="text-sm text-gray-700 mt-1 line-clamp-2">
-                {suggestion.content}
-              </p>
-            )}
-
-            {/* người đăng */}
-            {suggestion?.user && (
+            {suggestion?.user ? (
               <p className="text-xs text-gray-600 mt-1 italic">
                 Đăng bởi: {suggestion.user}
               </p>
+            ) : (
+              <p className="text-xs text-gray-600 mt-1 italic">Tạo bởi AI</p>
             )}
           </div>
 
-          {/* button đổi món */}
           <button
             onClick={handleRandomize}
-            className="px-4 py-2 flex items-center gap-2 rounded-lg cursor-pointer bg-black text-white hover:bg-gray-800 transition"
+            className="px-4 py-2 flex items-center gap-2 rounded-lg bg-black text-white hover:bg-gray-800"
           >
             <RefreshCw size={18} /> Đổi món
           </button>
         </div>
       </div>
+
+      {/* GRID */}
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
-        {/* ========================== THẺ 2 (dọc) ========================== */}
-        <div
-          className="row-span-2 row-start-2 flex flex-col items-center justify-center 
-  bg-gradient-to-b from-purple-400 to-purple-200 rounded-2xl p-4 shadow-md"
-        >
-          <div className="flex flex-col items-center gap-1 text-white font-bold text-xl">
-            <div className="flex items-center gap-2">
-              <Sparkles size={20} />
-              <span>Lựa</span>
-            </div>
-            <span>chọn</span>
-            <span>bởi</span>
-            <span>NutriAI</span>
-          </div>
+        {/* label */}
+        <div className="row-span-2 row-start-2 flex flex-col items-center justify-center bg-gradient-to-b from-purple-400 to-purple-200 rounded-2xl p-4 shadow-md">
+          <div className="text-white font-bold text-xl">Lựa chọn bởi NutriAI</div>
         </div>
 
-        {/* ========================== THẺ 3 ========================== */}
         <div className="col-span-3 row-start-2 p-4">
-          <FoodGrid foods={foodPosts} />
+          <FoodGrid
+            foods={savedRecipes}
+            onAIClick={handleClickAIFood}
+            onUserClick={handleClickUserFood}
+          />
         </div>
 
-        {/* ========================== THẺ 5 (dọc) ========================== */}
-        <div
-          className="row-span-2 col-start-4 row-start-4 flex flex-col items-center justify-center 
-  bg-gradient-to-b from-green-400 to-green-200 rounded-2xl p-4 shadow-md"
-        >
-          <div className="flex flex-col items-center gap-1 text-white font-bold text-xl">
-            <div className="flex items-center gap-2">
-              <Sparkles size={20} />
-              <span>Món</span>
-            </div>
-            <span>ăn</span>
-            <span>mới</span>
-            <span>nhất</span>
-          </div>
+        <div className="row-span-2 col-start-4 row-start-4 flex flex-col items-center justify-center bg-gradient-to-b from-green-400 to-green-200 rounded-2xl p-4 shadow-md">
+          <div className="text-white font-bold text-xl">Món ăn mới nhất</div>
         </div>
 
-        {/* ========================== THẺ 6 ========================== */}
         <div className="col-span-3 col-start-1 row-start-4 p-4">
-          <FoodGrid foods={foodPosts} />
+          <FoodGrid
+            foods={foodPosts}
+            onAIClick={handleClickAIFood}
+            onUserClick={handleClickUserFood}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-/* ------------------ COMPONENT GRID MÓN ĂN ------------------- */
-function FoodGrid({ foods, gridKey = "g" }: { foods: Post[]; gridKey?: string }) {
+/* GRID ITEM */
+function FoodGrid({
+  foods,
+  onAIClick,
+  onUserClick,
+}: {
+  foods: any[];
+  onAIClick: (id: string) => void;
+  onUserClick: (foodId: string) => void;
+}) {
   return (
     <div>
       <div className="grid grid-cols-4 gap-4">
         {foods.map((food, idx) => {
-          const stableId = food._id ?? food.foodId ?? `${food.foodName ?? "food"}-${idx}`;
-          const key = `${stableId}-${gridKey}-${idx}`;
+          const key = food._id || idx;
+
+          const isAI = !food.user; // món AI
+          const foodId = food._id || food.foodId;
+
           return (
-            <div key={key} className="flex flex-col items-center text-center">
+            <div
+              key={key}
+              className="flex flex-col items-center text-center cursor-pointer"
+              onClick={() =>
+                isAI
+                  ? onAIClick(foodId)
+                  : onUserClick(food.foodId) // món user → gọi API USER
+              }
+            >
               <div className="relative w-full h-48 rounded-xl overflow-hidden shadow">
                 <Image
-                  src={food.imageUrl || "/placeholder.jpg"}
+                  src={food.image || food.imageUrl}
                   fill
-                  alt={food.foodName || "food"}
+                  alt={food.name || food.foodName || "food"}
                   className="object-cover"
                 />
               </div>
 
               <p className="mt-2 text-base font-semibold text-orange-700">
-                {food.foodName}
+                {food.name || food.foodName}
               </p>
 
-              {food.user && (
-                <p className="mt-1 text-[11px] text-gray-500 italic">
-                  Đăng bởi: {food.user}
-                </p>
+              {food.user ? (
+                <p className="mt-1 text-[11px] text-gray-500 italic">Đăng bởi: {food.user}</p>
+              ) : (
+                <p className="text-[11px] text-gray-500 italic">Tạo bởi AI</p>
               )}
             </div>
           );

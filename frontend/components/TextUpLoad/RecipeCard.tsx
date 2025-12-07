@@ -43,6 +43,9 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   const [showSaveMenu, setShowSaveMenu] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(recipe.image || null);
   const [loadingImage, setLoadingImage] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -100,6 +103,35 @@ ${recipe.instructions}${nutritionInfo}
     a.click();
     URL.revokeObjectURL(url);
     setShowSaveMenu(false);
+  };
+
+  const contributeRecipe = async () => {
+    setSuccessMsg(null);
+    setErrorMsg(null);
+    setSaving(true);
+    try {
+      const payload = {
+        ...recipe,
+        image: imageUrl || recipe.image || "",
+      };
+
+      const res = await fetch("http://localhost:5000/api/recipes/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe: payload }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.message || `Server error ${res.status}`);
+      }
+      setSuccessMsg(data?.message || "Lưu công thức thành công");
+    } catch (err: any) {
+      console.error("Save recipe failed", err);
+      setErrorMsg(err?.message || "Lưu thất bại");
+    } finally {
+      setSaving(false);
+      setShowSaveMenu(false);
+    }
   };
 
   const fallbackImage = "https://www.cet.edu.vn/wp-content/uploads/2018/03/ga-nuong-mat-ong.jpg";
@@ -176,10 +208,11 @@ ${recipe.instructions}${nutritionInfo}
 
           <div className="relative flex-1">
             <button
-              onClick={() => setShowSaveMenu((v) => !v)}
-              className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-500 transition cursor-pointer"
+              onClick={contributeRecipe}
+              disabled={saving}
+              className={`w-full py-2 px-4 rounded-lg transition cursor-pointer ${saving ? 'bg-gray-300 text-gray-700' : 'bg-red-500 text-white hover:bg-red-600'}`}
             >
-              💾 Lưu công thức
+              {saving ? '⏳ Đang lưu...' : '💾 Đóng góp công thức'}
             </button>
             {showSaveMenu && (
               <div className="absolute z-10 left-0 right-0 mt-2 bg-white border rounded shadow-lg flex flex-col">
@@ -199,6 +232,8 @@ ${recipe.instructions}${nutritionInfo}
             )}
           </div>
         </div>
+        {successMsg && <p className="mt-3 text-green-600">{successMsg}</p>}
+        {errorMsg && <p className="mt-3 text-red-600">{errorMsg}</p>}
       </div>
     </div>
   );
