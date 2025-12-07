@@ -8,10 +8,11 @@ const postSchema = new mongoose.Schema({
     index: true,
   },
 
-foodId: {
-  type: String,
-  index: true,
-},
+  foodId: {
+    type: String,
+    unique: true,
+    index: true,
+  },
 
   foodName: {
     type: String,

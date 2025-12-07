@@ -172,7 +172,7 @@ export default function AdminPage() {
                       />
                     </td>
                     <td className="p-3 border font-semibold">{post.foodName}</td>
-                    <td className="p-3 border">{post.content}</td>
+                    <td className="p-3 border max-w-[200px] truncate">{post.content}</td>
                     <td className="p-3 border">{post.user}</td>
                     <td className="p-3 border">
                       {new Date(post.createdAt).toLocaleString()}

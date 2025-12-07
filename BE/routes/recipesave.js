@@ -60,33 +60,44 @@ const imagekit = require("../config/imagekit");
  */
 router.post("/save", async (req, res) => {
   try {
-    const {userId, recipe} = req.body;
+    const { recipe } = req.body;
 
-    if (!userId || !recipe) {
-      return res.status(400).json({error: "Thiếu userId hoặc recipe"});
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({error: "Không tìm thấy người dùng"});
+    if (!recipe) {
+      return res.status(400).json({ error: "Thiếu recipe" });
     }
 
     let imageUrl = "";
     let imageId = "";
 
-    if (recipe.image && recipe.image.startsWith("http")) {
-      const result = await imagekit.upload({
-        file: recipe.image,
-        fileName: `recipe-${Date.now()}.jpg`,
-        folder: "recipes",
-      });
+if (recipe.image && recipe.image.startsWith("http")) {
+  try {
+    const axios = require("axios");
 
-      imageUrl = result.url;
-      imageId = result.fileId;
-    }
+    // Fetch ảnh từ URL crawl được
+    const response = await axios.get(recipe.image, {
+      responseType: "arraybuffer",
+      headers: {
+        "User-Agent": "Mozilla/5.0",  // Giả trình duyệt để tránh bị chặn
+      },
+    });
+
+    // Upload buffer (base64) lên ImageKit
+    const uploaded = await imagekit.upload({
+      file: Buffer.from(response.data).toString("base64"),
+      fileName: `recipe-${Date.now()}.jpg`,
+      folder: "recipes",
+    });
+
+    imageUrl = uploaded.url;
+    imageId = uploaded.fileId;
+
+  } catch (err) {
+    console.error("Lỗi fetch/upload ảnh:", err.message);
+  }
+}
+
 
     const newRecipe = await Recipe.create({
-      user: userId,
       name: recipe.name,
       ingredients: recipe.ingredients || [],
       instructions: recipe.instructions || "",
@@ -101,49 +112,74 @@ router.post("/save", async (req, res) => {
       },
     });
 
-    user.savedRecipes.push(newRecipe._id);
-    await user.save();
-
     res.status(201).json({
-      message: "Lưu thành công & upload ảnh ImageKit",
+      message: "Lưu công thức thành công (không cần userId)",
       recipe: newRecipe,
     });
   } catch (error) {
     console.error("Lỗi lưu recipe:", error);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+/**
+ * @swagger
+ * /api/recipes/saved:
+ *   get:
+ *     summary: Lấy tất cả công thức nấu ăn (không cần userId)
+ *     tags: [Recipes]
+ *     responses:
+ *       200:
+ *         description: Danh sách toàn bộ công thức
+ */
+router.get("/saved", async (req, res) => {
+  try {
+    const recipes = await Recipe.find();
+
+    res.status(200).json({
+      count: recipes.length,
+      recipes,
+    });
+  } catch (error) {
+    console.error("Lỗi lấy danh sách recipes:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
 /**
  * @swagger
- * /api/recipes/saved/{userId}:
+ * /api/recipes/{id}:
  *   get:
- *     summary: Xem danh sách công thức đã lưu của người dùng
+ *     summary: Lấy chi tiết một món ăn theo ID
  *     tags: [Recipes]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: ID của món ăn
  *     responses:
  *       200:
- *         description: Danh sách công thức đã lưu
+ *         description: Chi tiết món ăn
+ *       404:
+ *         description: Không tìm thấy món ăn
  */
-router.get("/saved/:userId", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId).populate(
-      "savedRecipes"
-    );
-    if (!user) {
-      return res.status(404).json({error: "Không tìm thấy người dùng"});
+    const { id } = req.params;
+
+    const recipe = await Recipe.findById(id);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Không tìm thấy món ăn" });
     }
 
-    res.json({
-      savedRecipes: user.savedRecipes,
-    });
+    res.status(200).json(recipe);
   } catch (error) {
-    res.status(500).json({error: error.message});
+    console.error("Lỗi lấy recipe theo ID:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
