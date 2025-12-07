@@ -2,13 +2,34 @@
 
 import Image from "next/image";
 
-export default function RecipeModal({ recipe, onClose }: any) {
+interface Nutrition {
+  calories: string;
+  protein: string;
+  fat: string;
+  carbs: string;
+}
+
+interface Recipe {
+  name: string;
+  image: string;
+  cook_time: string;
+  instructions: string;
+  ingredients: string[];
+  nutrition: Nutrition;
+}
+
+interface RecipeModalProps {
+  recipe: Recipe | null;
+  onClose: () => void;
+}
+
+export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
   if (!recipe) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-lg relative">
-        {/* nút đóng */}
+        {/* Nút đóng */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-600 hover:text-black"
@@ -32,10 +53,12 @@ export default function RecipeModal({ recipe, onClose }: any) {
         </p>
 
         <h3 className="mt-4 font-semibold text-lg">Nguyên liệu</h3>
-        <p className="text-gray-700">{recipe.ingredients?.join(", ")}</p>
+        <p className="text-gray-700">
+          {recipe.ingredients?.join(", ")}
+        </p>
 
         <h3 className="mt-4 font-semibold text-lg">Cách làm</h3>
-        <p className=" text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
+        <p className="text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
           {recipe.instructions}
         </p>
 

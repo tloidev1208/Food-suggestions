@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
+import Image from "next/image";
 interface Post {
   _id?: string;
   user: string;
@@ -161,18 +161,25 @@ export default function AdminPage() {
 
             <tbody>
               {posts.map((post, idx) => {
-                const rowKey = post._id ?? `${post.foodId}-${post.createdAt ?? idx}`;
+                const rowKey =
+                  post._id ?? `${post.foodId}-${post.createdAt ?? idx}`;
                 return (
                   <tr key={rowKey} className="hover:bg-gray-50">
                     <td className="p-3 border">
-                      <img
-                        src={post.imageUrl}
+                      <Image
+                       src={post.imageUrl}
                         alt={post.foodName}
-                        className="w-20 h-20 object-cover rounded-md"
+                        width={300}
+                        height={200}
+                         className="w-20 h-20 object-cover rounded-md"
                       />
                     </td>
-                    <td className="p-3 border font-semibold">{post.foodName}</td>
-                    <td className="p-3 border max-w-[200px] truncate">{post.content}</td>
+                    <td className="p-3 border font-semibold">
+                      {post.foodName}
+                    </td>
+                    <td className="p-3 border max-w-[200px] truncate">
+                      {post.content}
+                    </td>
                     <td className="p-3 border">{post.user}</td>
                     <td className="p-3 border">
                       {new Date(post.createdAt).toLocaleString()}
@@ -234,7 +241,10 @@ export default function AdminPage() {
             />
 
             {previewImage && (
-              <img
+              <Image
+                alt="Preview"
+                width={400}
+                height={160}
                 src={previewImage}
                 className="w-full h-40 object-cover rounded mb-4"
               />

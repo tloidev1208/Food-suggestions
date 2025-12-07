@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ImagePlus, FileText, Utensils } from "lucide-react";
-
+import Image from "next/image";
 interface Post {
   name: string;
   image: string;
@@ -141,10 +141,12 @@ export default function BlogPage() {
               />
 
               {previewImage && (
-                <img
+                <Image
                   src={previewImage}
                   alt="Preview"
                   className="w-full max-h-64 object-cover rounded-xl mt-3 shadow-md border"
+                  width={600}
+                  height={400}
                 />
               )}
             </div>
@@ -189,10 +191,12 @@ export default function BlogPage() {
             đồng FoodAI. Cùng nhau lan tỏa những món ăn ngon nhất!
           </p>
 
-          <img
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800"
-            className="rounded-2xl shadow-lg border"
+          <Image
+            src="/images/1.jpg"
             alt="Food Banner"
+            width={1200}
+            height={1200}
+            className="rounded-2xl shadow-lg border"
           />
         </div>
       </div>
@@ -209,10 +213,12 @@ export default function BlogPage() {
             </h3>
 
             {post.image && (
-              <img
+              <Image
                 src={post.image}
                 alt={post.name}
                 className="w-full max-h-72 object-cover rounded-xl mb-4 shadow"
+                width={800}
+                height={320}
               />
             )}
 
