@@ -25,6 +25,7 @@ const updatepost = require("./routes/posts/update");
 const logoutRoute = require("./routes/logout");
 const recipeSaveRoutes = require("./routes/recipesave");
 const foodDetailRoutes = require("./routes/foodDetail");
+const recoveryRouter = require("./routes/recovery");
 const app = express();
 const PORT = process.env.PORT || 5000; // Cho phép cấu hình PORT qua env
 app.use(cors());
@@ -65,6 +66,7 @@ app.use("/api/posts", updatepost);
 app.use("/api/logout", logoutRoute);
 app.use("/api/recipes", recipeSaveRoutes);
 app.use("/api/recipes", foodDetailRoutes);
+app.use("/api/recovery", recoveryRouter);
 
 // Swagger Docs
 swaggerDocs(app);
