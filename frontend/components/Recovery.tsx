@@ -147,8 +147,19 @@ export default function RecoveryPage({
         </div>
       </form>
 
-    {result && (() => {
-  const r = JSON.parse(result);
+   {(() => {
+  if (!result) return null;
+
+  let r;
+  try {
+    r = JSON.parse(result);
+  } catch {
+    return (
+      <div className="mt-4 p-4 bg-red-100 text-red-600 rounded-lg">
+        {result}
+      </div>
+    );
+  }
 
   const SectionCard = ({ title, icon, children }: any) => (
     <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
@@ -162,50 +173,28 @@ export default function RecoveryPage({
 
   return (
     <div className="mt-6 space-y-4">
-
-      {/* INTENSITY */}
-      <SectionCard
-        title="Cường độ buổi tập"
-        icon={<span className="text-blue-500 text-xl">🔥</span>}
-      >
-        <p className="text-lg font-bold text-blue-600 capitalize">
-          {r.intensity}
-        </p>
+      <SectionCard title="Cường độ buổi tập" icon={<span className="text-blue-500 text-xl">🔥</span>}>
+        <p className="text-lg font-bold text-blue-600 capitalize">{r.intensity}</p>
         <p className="text-gray-600 mt-1">{r.summary}</p>
       </SectionCard>
 
-      {/* WATER + ELECTROLYTE */}
-      <SectionCard
-        title="Bổ sung nước & điện giải"
-        icon={<span className="text-cyan-500 text-xl">💧</span>}
-      >
+      <SectionCard title="Bổ sung nước & điện giải" icon={<span className="text-cyan-500 text-xl">💧</span>}>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-500">Nước cần nạp</p>
-            <p className="text-lg font-semibold text-cyan-600">
-              {r.water_intake} ml
-            </p>
+            <p className="text-lg font-semibold text-cyan-600">{r.water_intake} ml</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Điện giải</p>
-            <p className="text-lg font-semibold text-cyan-600">
-              {r.electrolytes}
-            </p>
+            <p className="text-lg font-semibold text-cyan-600">{r.electrolytes}</p>
           </div>
         </div>
       </SectionCard>
 
-      {/* NUTRITION */}
-      <SectionCard
-        title="Dinh dưỡng khuyến nghị"
-        icon={<span className="text-green-600 text-xl">🥗</span>}
-      >
+      <SectionCard title="Dinh dưỡng khuyến nghị" icon={<span className="text-green-600 text-xl">🥗</span>}>
         <ul className="space-y-2">
           {r.nutrition?.map((item: string, i: number) => (
-            <li
-              key={i}
-              className="flex items-start gap-2"
-            >
+            <li key={i} className="flex items-start gap-2">
               <span className="text-green-500 mt-1">•</span>
               <span>{item}</span>
             </li>
@@ -213,11 +202,7 @@ export default function RecoveryPage({
         </ul>
       </SectionCard>
 
-      {/* STRETCHING */}
-      <SectionCard
-        title="Bài giãn cơ"
-        icon={<span className="text-purple-500 text-xl">🧘‍♂️</span>}
-      >
+      <SectionCard title="Bài giãn cơ" icon={<span className="text-purple-500 text-xl">🧘‍♂️</span>}>
         <ul className="space-y-2">
           {r.stretching?.map((item: string, i: number) => (
             <li key={i} className="flex items-start gap-2">
@@ -228,24 +213,14 @@ export default function RecoveryPage({
         </ul>
       </SectionCard>
 
-      {/* REST */}
-      <SectionCard
-        title="Thời gian nghỉ đề xuất"
-        icon={<span className="text-orange-500 text-xl">⏱️</span>}
-      >
-        <p className="text-lg font-semibold text-orange-600">
-          {r.rest_time}
-        </p>
+      <SectionCard title="Thời gian nghỉ" icon={<span className="text-orange-500 text-xl">⏱️</span>}>
+        <p className="text-lg font-semibold text-orange-600">{r.rest_time}</p>
       </SectionCard>
 
-      {/* WARNINGS */}
       {r.warnings?.length > 0 && (
-        <SectionCard
-          title="Cảnh báo"
-          icon={<span className="text-red-500 text-xl">⚠️</span>}
-        >
+        <SectionCard title="Cảnh báo" icon={<span className="text-red-500 text-xl">⚠️</span>}>
           <ul className="space-y-2">
-            {r.warnings?.map((w: string, i: number) => (
+            {r.warnings.map((w: string, i: number) => (
               <li key={i} className="flex items-start gap-2">
                 <span className="text-red-500 mt-1">•</span>
                 <span className="text-red-600">{w}</span>
@@ -254,10 +229,10 @@ export default function RecoveryPage({
           </ul>
         </SectionCard>
       )}
-
     </div>
   );
 })()}
+
 
 
     </div>
