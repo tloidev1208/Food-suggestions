@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { RefreshCw, Sparkles } from "lucide-react";
+import { RefreshCw} from "lucide-react";
 
 import RecipeModal from "@/components/RecipeModal";
 import PostModal from "@/components/PostModal";
