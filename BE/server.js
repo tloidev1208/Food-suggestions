@@ -55,7 +55,7 @@ app.use("/api/recipes", mealPlannerRoutes);
 app.use("/api/recipes", nutritionRoutes);
 app.use("/strava", stravaRoutes);
 app.use("/api/posts", createpost);
-app.use("/api/posts", deletepost);
+app.use("/api/posts", deletePost);
 app.use("/api/posts", getAllPost);
 app.use("/api/posts", getById);
 app.use("/api/recipes", mealPlannerRoutes);
