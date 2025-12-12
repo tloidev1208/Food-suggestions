@@ -51,7 +51,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
 
         <h3 className="mt-4 font-semibold text-lg">Cách làm</h3>
         <p className="text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
-          {recipe.instructions?.join("\n")}
+          {recipe.instructions}
         </p>
 
         <h3 className="mt-4 font-semibold text-lg">Dinh dưỡng</h3>
