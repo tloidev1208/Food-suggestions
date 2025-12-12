@@ -12,21 +12,11 @@ interface Post {
   createdAt: string;
   user: string;
 }
-
-
 export default function AiCreate() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // --- STATE CHO SỬA BÀI VIẾT ---
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
-  const [editFoodName, setEditFoodName] = useState("");
-  const [editContent, setEditContent] = useState("");
-  const [editImage, setEditImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-
   // Fetch dữ liệu từ API
- const fetchPosts = async () => {
+const fetchPosts = async () => {
   try {
     const token = localStorage.getItem("token");
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipes/saved`, {
@@ -37,15 +27,21 @@ export default function AiCreate() {
 
     const data = await res.json();
 
-    // API trả về { count, recipes }
-    const mappedPosts: Post[] = data.recipes.map((r: any) => ({
+    interface RawRecipe {
+      _id: string;
+      name: string;
+      instructions: string;
+      image: string;
+    }
+
+    const mappedPosts: Post[] = (data.recipes as RawRecipe[]).map((r) => ({
       _id: r._id,
-      foodId: r._id,              // dùng luôn _id làm foodId
+      foodId: r._id,
       foodName: r.name,
-      content: r.instructions,    // bạn đang dùng content → map từ instructions
+      content: r.instructions,
       imageUrl: r.image,
-      createdAt: new Date().toISOString(), // API chưa có → tạo tạm
-      user: "AI",                 // API chưa trả user → gán mặc định
+      createdAt: new Date().toISOString(),
+      user: "AI",
     }));
 
     setPosts(mappedPosts);
@@ -57,90 +53,11 @@ export default function AiCreate() {
 };
 
 
+
   useEffect(() => {
     fetchPosts();
   }, []);
 
-  // Xóa bài viết
-  const handleDelete = async (foodId: string) => {
-    if (!confirm("Bạn có chắc muốn xóa bài viết này?")) return;
-
-    try {
-      const res = await fetch(
-        `http://localhost:5000/api/posts/food/${foodId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!res.ok) {
-        alert("Xóa thất bại!");
-        return;
-      }
-
-      setPosts((prev) => prev.filter((p) => p.foodId !== foodId));
-      alert("Xóa bài viết thành công!");
-    } catch (err) {
-      console.error(err);
-      alert("Lỗi kết nối server!");
-    }
-  };
-
-  // ---------------------------
-  // MỞ POPUP SỬA BÀI VIẾT
-  // ---------------------------
-  const handleEdit = (foodId: string) => {
-    const post = posts.find((p) => p.foodId === foodId);
-    if (!post) return;
-
-    setEditingPost(post);
-    setEditFoodName(post.foodName);
-    setEditContent(post.content);
-    setPreviewImage(post.imageUrl);
-    setEditImage(null);
-  };
-
-  // ---------------------------
-  // GỬI API CẬP NHẬT
-  // ---------------------------
-  const submitEdit = async () => {
-    if (!editingPost) return;
-
-    const formData = new FormData();
-    formData.append("foodName", editFoodName);
-    formData.append("content", editContent);
-
-    if (editImage) {
-      formData.append("image", editImage);
-    }
-
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/posts/food/${editingPost.foodId}`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
-
-      if (!res.ok) {
-        alert("Cập nhật thất bại!");
-        return;
-      }
-
-      alert("Cập nhật thành công!");
-
-      // Load lại danh sách
-      fetchPosts();
-      setEditingPost(null);
-    } catch (error) {
-      console.error("Lỗi khi cập nhật:", error);
-      alert("Lỗi kết nối server!");
-    }
-  };
 
   return (
     <div className="">

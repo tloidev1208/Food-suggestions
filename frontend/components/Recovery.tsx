@@ -160,8 +160,12 @@ export default function RecoveryPage({
       </div>
     );
   }
-
-  const SectionCard = ({ title, icon, children }: any) => (
+interface SectionCardProps {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}
+  const SectionCard = ({ title, icon, children }: SectionCardProps) => (
     <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-100">
       <div className="flex items-center gap-2 mb-2">
         {icon}

@@ -1,21 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { Recipe } from "@/app/types/recipe";
 
 interface Nutrition {
   calories: string;
   protein: string;
   fat: string;
   carbs: string;
-}
-
-interface Recipe {
-  name: string;
-  image: string;
-  cook_time: string;
-  instructions: string;
-  ingredients: string[];
-  nutrition: Nutrition;
 }
 
 interface RecipeModalProps {
@@ -59,7 +51,7 @@ export default function RecipeModal({ recipe, onClose }: RecipeModalProps) {
 
         <h3 className="mt-4 font-semibold text-lg">Cách làm</h3>
         <p className="text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
-          {recipe.instructions}
+          {recipe.instructions?.join("\n")}
         </p>
 
         <h3 className="mt-4 font-semibold text-lg">Dinh dưỡng</h3>

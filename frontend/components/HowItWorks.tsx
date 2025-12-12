@@ -2,23 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { RefreshCw} from "lucide-react";
-
+import { RefreshCw } from "lucide-react";
 import RecipeModal from "@/components/RecipeModal";
 import PostModal from "@/components/PostModal";
-
-interface Post {
-  _id?: string;
-  user?: string;
-  foodId?: string;
-  foodName?: string;
-  content?: string;
-  createdAt?: string;
-  imageUrl?: string;
-  name?: string;
-  image?: string;
-}
-
+import { Recipe } from "@/app/types/recipe";
+import { Post } from "@/app/types/post";
 export default function HowItWorks() {
   const [foodPosts, setFoodPosts] = useState<Post[]>([]);
   const [savedRecipes, setSavedRecipes] = useState<Post[]>([]);
@@ -26,9 +14,8 @@ export default function HowItWorks() {
   const [loading, setLoading] = useState(true);
   const [suggestion, setSuggestion] = useState<Post | null>(null);
 
-  const [selectedRecipe, setSelectedRecipe] = useState<any | null>(null); // popup AI
-  const [selectedPost, setSelectedPost] = useState<any | null>(null); // popup user
-
+ const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   /* FETCH POSTS */
   useEffect(() => {
     async function fetchPosts() {
@@ -54,12 +41,12 @@ export default function HowItWorks() {
         const res = await fetch("http://localhost:5000/api/recipes/saved");
         const data = await res.json();
 
-        const list: any[] = Array.isArray(data)
-          ? data
+        const list: Post[] = Array.isArray(data)
+          ? (data as Post[])
           : Array.isArray(data.recipes)
-          ? data.recipes
+          ? (data.recipes as Post[])
           : Array.isArray(data.savedRecipes)
-          ? data.savedRecipes
+          ? (data.savedRecipes as Post[])
           : [];
 
         setSavedRecipes(list);
@@ -88,15 +75,16 @@ export default function HowItWorks() {
   };
 
   /* CLICK MÓN AI */
-  const handleClickAIFood = async (id: string) => {
-    try {
-      const res = await fetch(`http://localhost:5000/api/recipes/${id}`);
-      const data = await res.json();
-      setSelectedRecipe(data);
-    } catch (err) {
-      console.error("Không thể tải recipe:", err);
-    }
-  };
+ const handleClickAIFood = async (id: string) => {
+  try {
+    const res = await fetch(`http://localhost:5000/api/recipes/${id}`);
+    const data: Recipe = await res.json();
+    setSelectedRecipe(data);
+  } catch (err) {
+    console.error("Không thể tải recipe:", err);
+  }
+};
+
 
   /* CLICK MÓN USER */
   const handleClickUserFood = async (foodId: string) => {
@@ -112,7 +100,10 @@ export default function HowItWorks() {
   return (
     <div className="py-2 px-4 md:px-8 text-black max-w-7xl mx-auto">
       {/* 2 POPUP */}
-      <RecipeModal recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
+      <RecipeModal
+        recipe={selectedRecipe}
+        onClose={() => setSelectedRecipe(null)}
+      />
       <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />
 
       <div className="col-span-4 p-6 rounded-2xl bg-gradient-to-r from-orange-300 to-orange-100 flex flex-col gap-4">
@@ -156,7 +147,9 @@ export default function HowItWorks() {
       <div className="grid grid-cols-4 grid-rows-1 gap-4">
         {/* label */}
         <div className="row-span-2 row-start-2 flex flex-col items-center justify-center bg-gradient-to-b from-purple-400 to-purple-200 rounded-2xl p-4 shadow-md">
-          <div className="text-white font-bold text-xl">Lựa chọn bởi NutriAI</div>
+          <div className="text-white font-bold text-xl">
+            Lựa chọn bởi NutriAI
+          </div>
         </div>
 
         <div className="col-span-3 row-start-2 p-4">
@@ -189,7 +182,7 @@ function FoodGrid({
   onAIClick,
   onUserClick,
 }: {
-  foods: any[];
+  foods: Post[];
   onAIClick: (id: string) => void;
   onUserClick: (foodId: string) => void;
 }) {
@@ -207,14 +200,12 @@ function FoodGrid({
               key={key}
               className="flex flex-col items-center text-center cursor-pointer"
               onClick={() =>
-                isAI
-                  ? onAIClick(foodId)
-                  : onUserClick(food.foodId) // món user → gọi API USER
+                isAI ? onAIClick(foodId!) : onUserClick(food.foodId!)
               }
             >
               <div className="relative w-full h-48 rounded-xl overflow-hidden shadow">
                 <Image
-                  src={food.image || food.imageUrl}
+                  src={food.image || food.imageUrl || "/2.avif"}
                   fill
                   alt={food.name || food.foodName || "food"}
                   className="object-cover"
@@ -226,7 +217,9 @@ function FoodGrid({
               </p>
 
               {food.user ? (
-                <p className="mt-1 text-[11px] text-gray-500 italic">Đăng bởi: {food.user}</p>
+                <p className="mt-1 text-[11px] text-gray-500 italic">
+                  Đăng bởi: {food.user}
+                </p>
               ) : (
                 <p className="text-[11px] text-gray-500 italic">Tạo bởi AI</p>
               )}

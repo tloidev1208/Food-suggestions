@@ -54,10 +54,13 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
       setLoadingImage(true);
       try {
         const q = encodeURIComponent(recipe.name);
-        const res = await fetch(`http://localhost:5000/api/serp-images/search?query=${q}`);
+        const res = await fetch(
+          `http://localhost:5000/api/serp-images/search?query=${q}`
+        );
         if (!res.ok) throw new Error(`Image API error ${res.status}`);
         const data = (await res.json()) as SerpResponse;
-        const first = data?.images && data.images.length > 0 ? data.images[0] : null;
+        const first =
+          data?.images && data.images.length > 0 ? data.images[0] : null;
         const src = first?.original || first?.thumbnail || recipe.image || null;
         if (mounted) setImageUrl(src);
       } catch (err) {
@@ -75,7 +78,9 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   }, [recipe.name, recipe.image]);
 
   const saveToFile = () => {
-    const ingredientsList = recipe.ingredients.map((item) => `- ${item}`).join("\n");
+    const ingredientsList = recipe.ingredients
+      .map((item) => `- ${item}`)
+      .join("\n");
     const nutritionInfo = recipe.nutrition
       ? `\n🍽 Thông tin dinh dưỡng:
 - Calories: ${recipe.nutrition.calories}
@@ -99,7 +104,9 @@ ${recipe.instructions}${nutritionInfo}
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `cong-thuc-${recipe.name?.replace(/\s+/g, "-").toLowerCase() || "khong-ten"}.txt`;
+    a.download = `cong-thuc-${
+      recipe.name?.replace(/\s+/g, "-").toLowerCase() || "khong-ten"
+    }.txt`;
     a.click();
     URL.revokeObjectURL(url);
     setShowSaveMenu(false);
@@ -125,16 +132,19 @@ ${recipe.instructions}${nutritionInfo}
         throw new Error(data?.message || `Server error ${res.status}`);
       }
       setSuccessMsg(data?.message || "Lưu công thức thành công");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Save recipe failed", err);
-      setErrorMsg(err?.message || "Lưu thất bại");
+      const message = err instanceof Error ? err.message : "Lưu thất bại";
+
+      setErrorMsg(message);
     } finally {
       setSaving(false);
       setShowSaveMenu(false);
     }
   };
 
-  const fallbackImage = "https://www.cet.edu.vn/wp-content/uploads/2018/03/ga-nuong-mat-ong.jpg";
+  const fallbackImage =
+    "https://www.cet.edu.vn/wp-content/uploads/2018/03/ga-nuong-mat-ong.jpg";
 
   return (
     <div className="border rounded p-4 shadow">
@@ -160,10 +170,18 @@ ${recipe.instructions}${nutritionInfo}
       {recipe.nutrition && (
         <div className="flex gap-4 mt-4 justify-center">
           {[
-            { icon: "🔥", label: "Lượng calo", value: recipe.nutrition.calories },
+            {
+              icon: "🔥",
+              label: "Lượng calo",
+              value: recipe.nutrition.calories,
+            },
             { icon: "💪", label: "Chất đạm", value: recipe.nutrition.protein },
             { icon: "🥑", label: "Chất béo", value: recipe.nutrition.fat },
-            { icon: "🍞", label: "Carbohydrate", value: recipe.nutrition.carbs },
+            {
+              icon: "🍞",
+              label: "Carbohydrate",
+              value: recipe.nutrition.carbs,
+            },
           ].map(({ icon, label, value }) => (
             <div
               key={label}
@@ -186,7 +204,9 @@ ${recipe.instructions}${nutritionInfo}
         </div>
         <hr className="my-4" />
         <div>
-          <strong className="text-gray-900 mb-1 text-xl">🛒 Nguyên liệu:</strong>
+          <strong className="text-gray-900 mb-1 text-xl">
+            🛒 Nguyên liệu:
+          </strong>
           <ul className="list-disc list-inside text-gray-700">
             {recipe.ingredients.map((item, idx) => (
               <li key={idx}>{item}</li>
@@ -210,9 +230,13 @@ ${recipe.instructions}${nutritionInfo}
             <button
               onClick={contributeRecipe}
               disabled={saving}
-              className={`w-full py-2 px-4 rounded-lg transition cursor-pointer ${saving ? 'bg-gray-300 text-gray-700' : 'bg-red-500 text-white hover:bg-red-600'}`}
+              className={`w-full py-2 px-4 rounded-lg transition cursor-pointer ${
+                saving
+                  ? "bg-gray-300 text-gray-700"
+                  : "bg-red-500 text-white hover:bg-red-600"
+              }`}
             >
-              {saving ? '⏳ Đang lưu...' : '💾 Đóng góp công thức'}
+              {saving ? "⏳ Đang lưu..." : "💾 Đóng góp công thức"}
             </button>
             {showSaveMenu && (
               <div className="absolute z-10 left-0 right-0 mt-2 bg-white border rounded shadow-lg flex flex-col">

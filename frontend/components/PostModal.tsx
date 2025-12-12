@@ -2,12 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
-
+import { Post } from "@/app/types/post";
 export default function PostModal({
   post,
   onClose,
 }: {
-  post: any | null;
+  post: Post | null;
   onClose: () => void;
 }) {
   if (!post) return null;
@@ -25,7 +25,7 @@ export default function PostModal({
         <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4">
           <Image
             src={post.imageUrl}
-            alt={post.foodName}
+            alt={post.foodName || "food"}
             fill
             className="object-cover"
           />
@@ -38,12 +38,12 @@ export default function PostModal({
         </p>
 
         <div className="text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
-  {post.content}
-</div>
-
+          {post.content}
+        </div>
 
         <p className="text-[11px] text-gray-500 mt-3">
-          Ngày đăng: {new Date(post.createdAt).toLocaleString()}
+         Ngày đăng: {new Date(post.createdAt ?? "").toLocaleString()}
+
         </p>
       </div>
     </div>

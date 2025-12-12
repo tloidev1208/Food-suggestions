@@ -6,15 +6,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
+interface Recipe {
+  name?: string;
+  description?: string;
+  image?: string;
+
+  ingredients?: string[];
+  instructions?: string[];
+
+  cook_time?: string;
+  servings?: string;
+
+  nutrition?: {
+    calories?: string;
+    protein?: string;
+    fat?: string;
+    carbs?: string;
+  };
+}
 
 export default function Analysis() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [result, setResult] = useState<{ label: string; confidence: number } | null>(null);
+  const [result, setResult] = useState<{
+    label: string;
+    confidence: number;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Công thức gợi ý từ API backend
-  const [recipe, setRecipe] = useState<any | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loadingRecipe, setLoadingRecipe] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +55,13 @@ export default function Analysis() {
     formData.append("file", file);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_PREDICT_URL}/predict`, {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_PREDICT_URL}/predict`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       const data = await res.json();
       setResult(data);
     } catch (error) {
@@ -86,12 +110,19 @@ export default function Analysis() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <ImageUp className="text-blue-500" />
-            <h2 className="text-xl font-semibold text-gray-800">Tải lên ảnh món ăn</h2>
+            <h2 className="text-xl font-semibold text-gray-800">
+              Tải lên ảnh món ăn
+            </h2>
           </div>
         </div>
 
         <div className="flex flex-col items-center gap-4">
-          <Input type="file" accept="image/*" onChange={handleFileChange} className="cursor-pointer" />
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="cursor-pointer"
+          />
 
           {preview && (
             <div className="flex justify-center mt-2">
@@ -143,13 +174,15 @@ export default function Analysis() {
           {/* HIỂN THỊ CÔNG THỨC */}
           {recipe && (
             <div className="mt-6 w-full max-w-2xl bg-white border p-6 rounded-xl shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-800">{recipe.name}</h2>
+              <h2 className="text-2xl font-bold text-gray-800">
+                {recipe.name}
+              </h2>
               <p className="text-gray-600 mt-1">{recipe.description}</p>
 
               {recipe.image && (
                 <Image
                   src={recipe.image}
-                  alt={recipe.name}
+                  alt={recipe?.name ?? "Recipe Image"}
                   width={400}
                   height={300}
                   className="rounded-lg mt-4"
@@ -158,14 +191,14 @@ export default function Analysis() {
 
               <h3 className="text-xl font-semibold mt-4">Nguyên liệu:</h3>
               <ul className="list-disc ml-6 mt-1 text-gray-700">
-                {recipe.ingredients.map((i: string, idx: number) => (
+                {recipe?.ingredients?.map((i: string, idx: number) => (
                   <li key={idx}>{i}</li>
                 ))}
               </ul>
 
               <h3 className="text-xl font-semibold mt-4">Cách làm:</h3>
               <ol className="list-decimal ml-6 mt-1 text-gray-700">
-                {recipe.instructions.map((s: string, idx: number) => (
+                {recipe?.instructions?.map((s: string, idx: number) => (
                   <li key={idx}>{s}</li>
                 ))}
               </ol>
@@ -173,13 +206,23 @@ export default function Analysis() {
               <p className="mt-4 text-sm text-gray-600">
                 ⏳ Thời gian nấu: {recipe.cook_time}
               </p>
-              <p className="text-sm text-gray-600">🍽 Khẩu phần: {recipe.servings}</p>
+              <p className="text-sm text-gray-600">
+                🍽 Khẩu phần: {recipe.servings}
+              </p>
 
               <h3 className="text-xl font-semibold mt-4">Dinh dưỡng:</h3>
-              <p className="text-sm text-gray-700">Calories: {recipe.nutrition.calories}</p>
-              <p className="text-sm text-gray-700">Protein: {recipe.nutrition.protein}</p>
-              <p className="text-sm text-gray-700">Fat: {recipe.nutrition.fat}</p>
-              <p className="text-sm text-gray-700">Carbs: {recipe.nutrition.carbs}</p>
+              <p className="text-sm text-gray-700">
+                Calories: {recipe?.nutrition?.calories}
+              </p>
+              <p className="text-sm text-gray-700">
+                Protein: {recipe?.nutrition?.protein}
+              </p>
+              <p className="text-sm text-gray-700">
+                Fat: {recipe?.nutrition?.fat}
+              </p>
+              <p className="text-sm text-gray-700">
+                Carbs: {recipe?.nutrition?.carbs}
+              </p>
             </div>
           )}
         </div>
