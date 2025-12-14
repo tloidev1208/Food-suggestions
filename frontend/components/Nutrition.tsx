@@ -51,7 +51,7 @@ export default function NutritionAdvicePage() {
     setLoading(true);
     try {
       const res = await fetch(
-        "http://localhost:5000/api/recipes/nutrition-advice",
+        "https://food-suggestions-production.up.railway.app//api/recipes/nutrition-advice",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

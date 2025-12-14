@@ -75,7 +75,7 @@ export default function ActivitiesList() {
   useEffect(() => {
     async function fetchData() {
       // B1: lấy token
-      const tokenRes = await fetch("http://localhost:5000/strava/token", {
+      const tokenRes = await fetch("https://food-suggestions-production.up.railway.app//strava/token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,7 +89,7 @@ export default function ActivitiesList() {
 
       // B2: gọi activities
       const actRes = await fetch(
-        `http://localhost:5000/strava/activities?access_token=${accessToken}`
+        `https://food-suggestions-production.up.railway.app//strava/activities?access_token=${accessToken}`
       );
       const activitiesData = await actRes.json();
 

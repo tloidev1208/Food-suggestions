@@ -55,7 +55,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
       try {
         const q = encodeURIComponent(recipe.name);
         const res = await fetch(
-          `http://localhost:5000/api/serp-images/search?query=${q}`
+          `https://food-suggestions-production.up.railway.app//api/serp-images/search?query=${q}`
         );
         if (!res.ok) throw new Error(`Image API error ${res.status}`);
         const data = (await res.json()) as SerpResponse;
@@ -122,7 +122,7 @@ ${recipe.instructions}${nutritionInfo}
         image: imageUrl || recipe.image || "",
       };
 
-      const res = await fetch("http://localhost:5000/api/recipes/save", {
+      const res = await fetch("https://food-suggestions-production.up.railway.app//api/recipes/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ recipe: payload }),

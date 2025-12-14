@@ -32,7 +32,7 @@ npm run dev
 cd BE
 npm install
 node server.js
-✅ Backend chạy tại: http://localhost:5000
+✅ Backend chạy tại: https://food-suggestions-production.up.railway.app/
 
 🍃 How to Connect to MongoDB
 Truy cập: https://cloud.mongodb.com và tạo một Cluster mới.
@@ -66,7 +66,7 @@ Swagger Docs:
 bash
 Copy
 Edit
-http://localhost:5000/api-docs
+https://food-suggestions-production.up.railway.app//api-docs
 
 
 Run code

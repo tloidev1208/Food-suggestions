@@ -55,7 +55,7 @@ export default function ActivityByID({ id }: Props) {
     async function fetchDetail() {
       setLoading(true);
       // Bước 1: Lấy access token từ BE
-      const tokenRes = await fetch("http://localhost:5000/strava/token", {
+      const tokenRes = await fetch("https://food-suggestions-production.up.railway.app//strava/token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -69,7 +69,7 @@ export default function ActivityByID({ id }: Props) {
 
       // Bước 2: Gọi API lấy chi tiết activity
       const res = await fetch(
-        `http://localhost:5000/strava/activities/${id}?access_token=${accessToken}`
+        `https://food-suggestions-production.up.railway.app//strava/activities/${id}?access_token=${accessToken}`
       );
       const data = await res.json();
       setDetail(data);

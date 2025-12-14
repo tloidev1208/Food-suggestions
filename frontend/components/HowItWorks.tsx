@@ -21,7 +21,7 @@ export default function HowItWorks() {
     async function fetchPosts() {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:5000/api/posts");
+        const res = await fetch("https://food-suggestions-production.up.railway.app//api/posts");
         const data = (await res.json()) as Post[];
         setFoodPosts(data || []);
       } catch (err) {
@@ -38,7 +38,7 @@ export default function HowItWorks() {
   useEffect(() => {
     async function fetchRecipes() {
       try {
-        const res = await fetch("http://localhost:5000/api/recipes/saved");
+        const res = await fetch("https://food-suggestions-production.up.railway.app//api/recipes/saved");
         const data = await res.json();
 
         const list: Post[] = Array.isArray(data)
@@ -77,7 +77,7 @@ export default function HowItWorks() {
   /* CLICK MÓN AI */
  const handleClickAIFood = async (id: string) => {
   try {
-    const res = await fetch(`http://localhost:5000/api/recipes/${id}`);
+    const res = await fetch(`https://food-suggestions-production.up.railway.app//api/recipes/${id}`);
     const data: Recipe = await res.json();
     setSelectedRecipe(data);
   } catch (err) {
@@ -89,7 +89,7 @@ export default function HowItWorks() {
   /* CLICK MÓN USER */
   const handleClickUserFood = async (foodId: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/posts/food/${foodId}`);
+      const res = await fetch(`https://food-suggestions-production.up.railway.app//api/posts/food/${foodId}`);
       const data = await res.json();
       setSelectedPost(data);
     } catch (err) {
