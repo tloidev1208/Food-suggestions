@@ -186,13 +186,22 @@ function FoodGrid({
   onAIClick: (id: string) => void;
   onUserClick: (foodId: string) => void;
 }) {
-  return (
-    <div>
-      <div className="grid grid-cols-4 gap-4">
-        {foods.map((food, idx) => {
-          const key = food._id || idx;
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
 
-          const isAI = !food.user; // món AI
+  const totalPages = Math.ceil(foods.length / ITEMS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedFoods = foods.slice(startIndex, endIndex);
+
+  return (
+    <div className="space-y-4">
+      {/* GRID */}
+      <div className="grid grid-cols-4 gap-4">
+        {paginatedFoods.map((food, idx) => {
+          const key = food._id || idx;
+          const isAI = !food.user;
           const foodId = food._id || food.foodId;
 
           return (
@@ -227,6 +236,34 @@ function FoodGrid({
           );
         })}
       </div>
+
+      {/* PAGINATION */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+          >
+            ← Trước
+          </button>
+
+          <span className="text-sm text-gray-600">
+            Trang {currentPage} / {totalPages}
+          </span>
+
+          <button
+            onClick={() =>
+              setCurrentPage((p) => Math.min(p + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+          >
+            Sau →
+          </button>
+        </div>
+      )}
     </div>
   );
 }
+

@@ -21,15 +21,17 @@ export default function HomeHeader() {
             <span className="block">TRỌN SỨC KHỎE</span>
           </h1>
           <div className="flex items-center gap-4">
-            <Link href="services/recipes">
+            <Link href="services">
               <Button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-lg">
                 Gợi ý Công Thức
               </Button>
             </Link>
             <div className="relative">
+              <Link href="services">
               <Button className="text-base md:text-lg px-6 py-3 bg-white text-black border border-gray-200 hover:bg-gray-100">
                 Phân tích món ăn
               </Button>
+              </Link>
               <span className="absolute -top-2 -right-2 bg-yellow-400 text-xs text-black px-2 py-0.5 rounded-full shadow">
                 Coming soon
               </span>
