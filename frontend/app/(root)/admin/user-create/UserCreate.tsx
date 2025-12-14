@@ -60,7 +60,7 @@ export default function UserCreate() {
 
     try {
       const res = await fetch(
-        `https://food-suggestions-production.up.railway.app//api/posts/food/${foodId}`,
+        `https://food-suggestions-production.up.railway.app/api/posts/food/${foodId}`,
         {
           method: "DELETE",
           headers: {

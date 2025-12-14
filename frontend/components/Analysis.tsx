@@ -78,7 +78,7 @@ export default function Analysis() {
     setLoadingRecipe(true);
 
     try {
-      const res = await fetch("https://food-suggestions-production.up.railway.app//api/recipes/food-detail", {
+      const res = await fetch("https://food-suggestions-production.up.railway.app/api/recipes/food-detail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: result.label }),

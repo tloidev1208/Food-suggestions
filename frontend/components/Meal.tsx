@@ -47,7 +47,7 @@ export default function Meal() {
     setLoading(true);
     try {
       const res = await fetch(
-        "https://food-suggestions-production.up.railway.app//api/recipes/meal-planner",
+        "https://food-suggestions-production.up.railway.app/api/recipes/meal-planner",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

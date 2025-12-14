@@ -56,7 +56,7 @@ export default function BlogPage() {
     formData.append("image", image);
 
     try {
-      const res = await fetch("https://food-suggestions-production.up.railway.app//api/posts", {
+      const res = await fetch("https://food-suggestions-production.up.railway.app/api/posts", {
         method: "POST",
         body: formData,
       });
