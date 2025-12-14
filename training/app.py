@@ -4,6 +4,7 @@ from keras.layers import TFSMLayer
 from tensorflow.keras.preprocessing import image
 import numpy as np
 import io
+import uvicorn
 from PIL import Image
 
 app = FastAPI()
@@ -54,3 +55,6 @@ async def predict(file: UploadFile = File(...)):
         import traceback
         traceback.print_exc()
         return {"error": str(e)}
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
