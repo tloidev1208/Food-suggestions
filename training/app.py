@@ -5,11 +5,13 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import io
 import os
-import uvicorn
 from PIL import Image
 
-app = FastAPI()
+app = FastAPI(title="Food Prediction API")
 
+# ======================
+# CORS
+# ======================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,6 +20,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ======================
+# Health check (BẮT BUỘC cho Railway)
+# ======================
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
+# ======================
+# Model config
+# ======================
 model = None
 labels = ["Cơm tấm", "Phở", "Bánh mì"]
 
@@ -28,35 +40,44 @@ def get_model():
     global model
     if model is None:
         print("🔥 Loading model...")
-        model = TFSMLayer(MODEL_PATH, call_endpoint="serving_default")
+        model = TFSMLayer(
+            MODEL_PATH,
+            call_endpoint="serving_default"
+        )
         print("✅ Model loaded")
     return model
 
+# ======================
+# API predict
+# ======================
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
         model = get_model()
 
-        img = Image.open(io.BytesIO(await file.read())).convert("RGB")
+        img_bytes = await file.read()
+        img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
         img = img.resize((224, 224))
-        img_array = image.img_to_array(img) / 255.0
+
+        img_array = image.img_to_array(img)
+        img_array = img_array / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
         preds = model(img_array)
+
+        # TFSMLayer có thể trả dict
         if isinstance(preds, dict):
             preds = list(preds.values())[0]
 
         preds = preds.numpy()[0]
-        predicted_label = labels[np.argmax(preds)]
-        confidence = float(np.max(preds))
+        idx = int(np.argmax(preds))
 
-        return {"label": predicted_label, "confidence": confidence}
+        return {
+            "label": labels[idx],
+            "confidence": float(preds[idx])
+        }
 
     except Exception as e:
         import traceback
         traceback.print_exc()
         return {"error": str(e)}
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
