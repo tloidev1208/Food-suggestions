@@ -7,6 +7,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY training ./training
 
-EXPOSE 8000
-
-CMD ["python", "training/app.py"]
+# Railway tự inject PORT → KHÔNG hardcode
+CMD ["sh", "-c", "uvicorn training.app:app --host 0.0.0.0 --port $PORT"]
