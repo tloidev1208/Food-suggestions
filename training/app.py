@@ -6,6 +6,7 @@ import numpy as np
 import io
 import os
 from PIL import Image
+import threading
 
 app = FastAPI(title="Food Prediction API")
 
@@ -21,7 +22,7 @@ app.add_middleware(
 )
 
 # ======================
-# Health check (BẮT BUỘC cho Railway)
+# Health check (BẮT BUỘC)
 # ======================
 @app.get("/")
 def root():
@@ -30,22 +31,37 @@ def root():
 # ======================
 # Model config
 # ======================
-model = None
 labels = ["Cơm tấm", "Phở", "Bánh mì"]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "model.savedmodel")
 
-def get_model():
+model = None
+model_lock = threading.Lock()
+
+def load_model():
     global model
+    with model_lock:
+        if model is None:
+            print("🔥 Loading model...")
+            model = TFSMLayer(
+                MODEL_PATH,
+                call_endpoint="serving_default"
+            )
+            print("✅ Model loaded")
+
+def get_model():
     if model is None:
-        print("🔥 Loading model...")
-        model = TFSMLayer(
-            MODEL_PATH,
-            call_endpoint="serving_default"
-        )
-        print("✅ Model loaded")
+        load_model()
     return model
+
+# ======================
+# Startup event (QUAN TRỌNG)
+# ======================
+@app.on_event("startup")
+def startup_event():
+    print("🚀 FastAPI started")
+    # ❌ KHÔNG load model ở đây (Railway dễ timeout)
 
 # ======================
 # API predict
@@ -65,7 +81,6 @@ async def predict(file: UploadFile = File(...)):
 
         preds = model(img_array)
 
-        # TFSMLayer có thể trả dict
         if isinstance(preds, dict):
             preds = list(preds.values())[0]
 
