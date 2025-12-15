@@ -5,6 +5,7 @@ export interface Post {
   foodName?: string;
   content?: string;
   createdAt?: string;
+  likes?: number;
 
   // các field này phải là string CHẮC CHẮN
   imageUrl: string;

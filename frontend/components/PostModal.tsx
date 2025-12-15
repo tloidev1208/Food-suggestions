@@ -1,8 +1,8 @@
 "use client";
-
-import React from "react";
 import Image from "next/image";
 import { Post } from "@/app/types/post";
+import { Heart } from "lucide-react";
+import { useState } from "react";
 export default function PostModal({
   post,
   onClose,
@@ -11,6 +11,13 @@ export default function PostModal({
   onClose: () => void;
 }) {
   if (!post) return null;
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(post.likes ?? 0);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikes((prev) => (liked ? prev - 1 : prev + 1));
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -45,6 +52,28 @@ export default function PostModal({
          Ngày đăng: {new Date(post.createdAt ?? "").toLocaleString()}
 
         </p>
+                <hr className="my-1" />
+        {/* ❤️ Footer like */}
+        <div className="mt-1 flex items-center justify-between">
+          {/* Lượt thích */}
+          <span className="text-gray-700 font-medium">
+            Lượt thích: {likes} 
+          </span>
+
+          {/* Nút tim */}
+          <button
+            onClick={handleLike}
+            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+          >
+            <Heart
+              className={`w-7 h-7 transition-all duration-200 ${
+                liked
+                  ? "fill-red-500 stroke-red-500 scale-110"
+                  : "fill-white stroke-gray-400"
+              }`}
+            />
+          </button>
+        </div>  
       </div>
     </div>
   );

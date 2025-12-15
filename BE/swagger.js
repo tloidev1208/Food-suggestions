@@ -13,7 +13,7 @@ const options = {
     },
     servers: [
       {
-        url: process.env.API_BASE_URL || "https://food-suggestions-production.up.railway.app",
+        url: process.env.API_BASE_URL || "${process.env.NEXT_PUBLIC_API_URL}",
       },
     ],
   },

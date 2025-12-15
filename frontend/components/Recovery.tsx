@@ -43,7 +43,7 @@ export default function RecoveryPage({
     setResult("");
 
     try {
-      const res = await fetch("https://food-suggestions-production.up.railway.app/api/recovery", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recovery`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

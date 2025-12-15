@@ -13,5 +13,6 @@ export interface Recipe {
   ingredients?: string[];
   instructions?: string[]; // bạn đang join, nên phải là string[]
   nutrition?: Nutrition;   // <- KHÔNG được là string
+  likes?: number;
 }
 
