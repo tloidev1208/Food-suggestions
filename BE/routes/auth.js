@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 const router = express.Router();
-const JWT_SECRET = "ban-nen-dat-env"; // 👉 Đưa vào .env thực tế
+const JWT_SECRET = process.env.JWT_SECRET; // ✅ dùng env
 
 /**
  * @swagger
@@ -12,33 +12,19 @@ const JWT_SECRET = "ban-nen-dat-env"; // 👉 Đưa vào .env thực tế
  *   post:
  *     summary: Đăng ký tài khoản mới
  *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Đăng ký thành công
  */
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password)
+  if (!name || !email || !password) {
     return res.status(400).json({ error: "Vui lòng nhập đủ thông tin" });
+  }
 
   try {
     const existingUser = await User.findOne({ email });
-    if (existingUser)
+    if (existingUser) {
       return res.status(400).json({ error: "Email đã tồn tại" });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
@@ -47,7 +33,14 @@ router.post("/register", async (req, res) => {
       password: hashedPassword,
     });
 
-    res.json({ status: "success", user: { id: newUser._id, email } });
+    res.json({
+      status: "success",
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: "Lỗi server" });
   }
@@ -59,41 +52,44 @@ router.post("/register", async (req, res) => {
  *   post:
  *     summary: Đăng nhập
  *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Đăng nhập thành công
  */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password)
+  if (!email || !password) {
     return res.status(400).json({ error: "Vui lòng nhập đủ thông tin" });
+  }
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: "Sai email hoặc mật khẩu" });
+    if (!user) {
+      return res.status(400).json({ error: "Sai email hoặc mật khẩu" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return res.status(400).json({ error: "Sai email hoặc mật khẩu" });
+    }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // ✅ SET COOKIE httpOnly
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false, // 👉 true nếu HTTPS
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+    });
 
     res.json({
       status: "success",
-      token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: "Lỗi server" });
@@ -102,22 +98,38 @@ router.post("/login", async (req, res) => {
 
 /**
  * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Đăng xuất
+ *     tags: [Auth]
+ */
+router.post("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+  });
+
+  res.json({
+    status: "success",
+    message: "Đăng xuất thành công",
+  });
+});
+
+/**
+ * @swagger
  * /api/auth:
  *   get:
  *     summary: Lấy tất cả người dùng
  *     tags: [Auth]
- *     responses:
- *       200:
- *         description: Danh sách người dùng
- *       500:
- *         description: Lỗi server
  */
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const users = await User.find().select('-password'); // ẩn password
+    const users = await User.find().select("-password");
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 module.exports = router;

@@ -43,7 +43,9 @@ export default function PostModal({
         <p className="text-sm italic text-gray-600 mb-2">
           Đăng bởi: {post.user}
         </p>
-
+        <div className="text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
+          Nguyên liệu: {post.ingredient}
+        </div>
         <div className="text-gray-800 text-sm whitespace-pre-line max-h-40 overflow-y-auto pr-1">
           {post.content}
         </div>

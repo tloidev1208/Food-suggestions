@@ -26,6 +26,12 @@ const postSchema = new mongoose.Schema({
     trim: true,
   },
 
+  ingredient: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+
   imageUrl: {
     type: String,
     default: "",

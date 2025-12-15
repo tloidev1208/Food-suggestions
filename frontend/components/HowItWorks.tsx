@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { RefreshCw } from "lucide-react";
 import RecipeModal from "@/components/RecipeModal";

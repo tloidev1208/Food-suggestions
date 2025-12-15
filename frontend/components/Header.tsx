@@ -23,25 +23,33 @@ const Header = () => {
     alert(`Tìm kiếm: ${search}`);
   };
 
-  const handleLogout = async () => {
-    try {
-      // 1. Gọi API logout backend (nếu có session hoặc cookie)
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include", // nếu backend dùng cookie
-      });
+ const handleLogout = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-      // 2. Xóa user + token client-side
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      setUser(null);
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      // 3. Redirect về trang đăng nhập
-      router.push("/sign-in");
-    } catch (err) {
-      console.error("Logout thất bại:", err);
-    }
-  };
+    // Xóa client state
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+
+    router.push("/sign-in");
+  } catch (error) {
+    console.error("Logout thất bại:", error);
+
+    // fallback: vẫn logout client-side
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    router.push("/sign-in");
+  }
+};
+
 
   return (
     <nav className="bg-gray-50 py-2 fixed top-0 left-0 w-full z-50">

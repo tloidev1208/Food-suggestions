@@ -32,6 +32,8 @@ const {image} = require("../../config/cloudinary");
  *                     type: string
  *                   foodName:
  *                     type: string
+ *                   ingredient:
+ *                     type: string
  *                   content:
  *                     type: string
  *                   createdAt:
@@ -52,6 +54,7 @@ router.get("/", async (req, res) => {
       user: post.user.name || post.user._id, // nếu user chưa populate thì dùng _id
       foodId: post.foodId,
       foodName: post.foodName,
+      ingredient: post.ingredient,
       content: post.content,
       createdAt: post.createdAt,
       imageUrl: post.imageUrl,

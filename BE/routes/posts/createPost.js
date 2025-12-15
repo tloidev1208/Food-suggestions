@@ -21,6 +21,7 @@
  *               - userId
  *               - foodName
  *               - content
+ *               - ingredient
  *             properties:
  *               userId:
  *                 type: string
@@ -28,6 +29,9 @@
  *               foodName:
  *                 type: string
  *                 example: "Phở bò"
+ *               ingredient:
+ *                 type: string
+ *                 example: "Thịt bò, bánh phở, hành lá"
  *               content:
  *                 type: string
  *                 example: "Món ăn rất ngon"
@@ -35,6 +39,7 @@
  *                 type: string
  *                 format: binary
  *                 description: Ảnh món ăn upload lên ImageKit
+ *
  *
  *     responses:
  *       201:
@@ -51,6 +56,8 @@
  *                 foodId:
  *                   type: string
  *                 foodName:
+ *                   type: string
+ *                 ingredient:
  *                   type: string
  *                 content:
  *                   type: string
@@ -73,13 +80,13 @@ const multer = require("multer");
 const imagekit = require("../../config/imagekit");
 
 // MULTER: upload vào RAM
-const upload = multer({storage: multer.memoryStorage()});
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const {userId, content, foodName} = req.body;
+    const { userId, content, foodName,ingredient } = req.body;
 
-    if (!userId || !content || !foodName) {
+    if (!userId || !content || !foodName || !ingredient) {
       return res.status(400).json({
         message: "userId, foodName và content là bắt buộc",
       });
@@ -100,7 +107,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       imageId = result.fileId;
     }
 
-    const count = await Post.countDocuments({user: userId});
+    const count = await Post.countDocuments({ user: userId });
     const foodId = `${userId}_${count + 1}`;
 
     const post = new Post({
@@ -108,6 +115,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       foodId,
       foodName,
       content,
+      ingredient,
       imageUrl,
       imageId,
     });
@@ -117,7 +125,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     res.status(201).json(post);
   } catch (error) {
     console.error("Lỗi khi tạo bài viết:", error);
-    res.status(500).json({error: error.message});
+    res.status(500).json({ error: error.message });
   }
 });
 

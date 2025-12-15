@@ -4,6 +4,7 @@ export interface Post {
   foodId?: string;
   foodName?: string;
   content?: string;
+  ingredient?: string;
   createdAt?: string;
   likes?: number;
 
