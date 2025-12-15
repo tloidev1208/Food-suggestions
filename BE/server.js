@@ -31,12 +31,27 @@ const PORT = process.env.PORT || 5000;
 /* =======================
    ✅ CORS CHUẨN COOKIE
 ======================= */
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://food-suggestions.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000", // FE
-    credentials: true,               // ⭐ BẮT BUỘC cho cookie
+    origin: function (origin, callback) {
+      // cho phép Postman / curl
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   })
 );
+
 
 /* =======================
    ✅ MIDDLEWARE CHUẨN
