@@ -66,7 +66,7 @@ export default function BlogPage() {
       console.log("API Response:", data);
 
       if (!res.ok) {
-        alert("Lỗi khi đăng bài!");
+        alert("Vui lòng đăng nhập để thực hiện hành động này!");
         setLoading(false);
         return;
       }
