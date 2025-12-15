@@ -1,10 +1,16 @@
-FROM python:3.10-slim
+FROM node:18-alpine
 
-WORKDIR /app
+# cd vào BE
+WORKDIR /app/BE
 
-COPY training/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# copy package trước để cache
+COPY BE/package*.json ./
 
-COPY training ./training
+RUN npm install
 
-CMD ["sh", "-c", "uvicorn training.app:app --host 0.0.0.0 --port $PORT"]
+# copy toàn bộ BE
+COPY BE .
+
+EXPOSE 5000
+
+CMD ["npm", "start"]
