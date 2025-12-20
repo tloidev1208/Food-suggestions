@@ -1,0 +1,13 @@
+# ❌ Bỏ toàn bộ FE (Next.js)
+frontend
+frontend/**
+
+# ❌ Bỏ lock file FE ở root (nếu có)
+package-lock.json
+
+# ❌ node_modules
+node_modules
+**/node_modules
+
+# ❌ Next build
+.next
