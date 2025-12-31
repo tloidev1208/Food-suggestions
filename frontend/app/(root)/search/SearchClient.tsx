@@ -11,8 +11,7 @@ interface SearchItem {
   imageUrl?: string;
   image?: string;
   content?: string;
-  ingredients?: string[];
-  instructions?: string[];
+  instructions?: string;
   nutrition?: {
     calories: string;
     protein: string;
@@ -21,7 +20,7 @@ interface SearchItem {
   };
 }
 
-const SearchPage = () => {
+export default function SearchClient() {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") || "";
 
@@ -40,8 +39,8 @@ const SearchPage = () => {
         if (data.success) {
           setResults(data.data);
         }
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Search error:", error);
       } finally {
         setLoading(false);
       }
@@ -52,20 +51,17 @@ const SearchPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* 🔎 TITLE */}
       <h1 className="text-2xl font-bold mb-6">
-        Kết quả tìm kiếm cho: <span className="text-red-500">"{q}"</span>
+        Kết quả tìm kiếm cho:{" "}
+        <span className="text-red-500">"{q}"</span>
       </h1>
 
-      {/* ⏳ LOADING */}
       {loading && <p>Đang tìm kiếm...</p>}
 
-      {/* ❌ NO RESULT */}
       {!loading && results.length === 0 && (
         <p className="text-gray-500">Không tìm thấy món ăn phù hợp</p>
       )}
 
-      {/* 🍽 RESULT GRID */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {results.map((item) => (
           <div
@@ -83,26 +79,16 @@ const SearchPage = () => {
                 {item.type === "post" ? item.foodName : item.name}
               </h3>
 
-              <p className="text-sm text-gray-500 capitalize">Công thức:</p>
+              <p className="text-gray-600 text-sm line-clamp-2">
+                {item.type === "post"
+                  ? item.content
+                  : item.instructions}
+              </p>
 
-              {/* POST CONTENT */}
-              {item.type === "post" && (
-                <p className="text-gray-600 text-sm line-clamp-2">
-                  {item.content}
-                </p>
-              )}
-
-              {item.type === "recipe" && (
-                <p className="text-gray-600 text-sm line-clamp-2">
-                  {item.instructions}
-                </p>
-              )}
-
-              {/* RECIPE INFO */}
               {item.type === "recipe" && item.nutrition && (
-                <div className="text-sm text-gray-600 flex flex-row gap-1 mt-2">
+                <div className="text-sm text-gray-600 flex gap-2 mt-2">
                   <p>🔥 {item.nutrition.calories}</p>
-                  <p>🥩 Protein: {item.nutrition.protein}</p>
+                  <p>🥩 {item.nutrition.protein}</p>
                 </div>
               )}
             </div>
@@ -111,6 +97,4 @@ const SearchPage = () => {
       </div>
     </div>
   );
-};
-
-export default SearchPage;
+}

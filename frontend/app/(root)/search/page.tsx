@@ -1,12 +1,10 @@
+import { Suspense } from "react";
+import SearchClient from "./SearchClient";
 
-import SearchPage from "@/components/SearchPage";
-
-const page = () => {
-    return (
-        <div>
-            <SearchPage />
-        </div>
-    );
-};
-
-export default page;
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<p className="p-6">Đang tải kết quả tìm kiếm...</p>}>
+      <SearchClient />
+    </Suspense>
+  );
+}
