@@ -56,7 +56,7 @@ export default function Analysis() {
 
     try {
       const res = await fetch(
-        `${process.env.}/predict`,
+        `${process.env.NEXT_PUBLIC_PREDICT_URL}/predict`,
         {
           method: "POST",
           body: formData,
