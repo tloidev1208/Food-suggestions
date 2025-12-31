@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, Search } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import SearchBar from "./Search";
 
 const Header = () => {
   const router = useRouter();
   const [user, setUser] = useState<{ name: string; avatar?: string } | null>(null);
-  const [search, setSearch] = useState("");
-
+ 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -18,10 +18,7 @@ const Header = () => {
     }
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(`Tìm kiếm: ${search}`);
-  };
+
 
  const handleLogout = async () => {
   try {
@@ -58,28 +55,7 @@ const Header = () => {
         <Link href="/" className="text-3xl font-bold z-20">
           <span className="text-gray-50">NutriAI</span>
         </Link>
-
-        {/* Thanh search ở giữa */}
-        <form
-          onSubmit={handleSearch}
-          className="hidden md:flex items-center bg-white rounded-xl shadow px-3 py-2 mx-8 flex-1 max-w-xl"
-        >
-          <Search className="w-5 h-5 text-gray-400 mr-2" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm kiếm món ăn, dinh dưỡng..."
-            className="bg-transparent outline-none flex-1 text-gray-700"
-          />
-          <button
-            type="submit"
-            className="px-3 py-1 rounded-full bg-red-500 text-white font-semibold ml-2 hover:bg-red-600"
-          >
-            Tìm
-          </button>
-        </form>
-
+        <SearchBar />
         {/* User info bên phải */}
         <div className="hidden lg:flex gap-4 z-10 items-center">
           <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 flex items-center gap-3 shadow">
