@@ -92,7 +92,7 @@ const Header = () => {
                   />
                   <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
                 </Avatar>
-                <p className="text-red-500 font-semibold">{user.name}!</p>
+                <p className="text-red-500 font-semibold">Xin chào, {user.name}!</p>
                 <button
                   className="px-2 py-1 border border-red-500 text-red-500 rounded cursor-pointer hover:bg-red-50 flex items-center gap-2"
                   onClick={handleLogout} // <-- gọi hàm logout ở đây
