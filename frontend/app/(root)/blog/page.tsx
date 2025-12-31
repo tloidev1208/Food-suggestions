@@ -20,6 +20,7 @@ export default function BlogPage() {
   const [openPopup, setOpenPopup] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
+  const [ingredient, setIngredient] = useState("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -54,6 +55,8 @@ export default function BlogPage() {
     formData.append("foodName", name);
     formData.append("content", description);
     formData.append("image", image);
+    formData.append("ingredient", ingredient);
+
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
@@ -149,6 +152,14 @@ export default function BlogPage() {
                   height={400}
                 />
               )}
+            </div>
+            <div>
+              <label className="font-semibold text-gray-700">Nguyên liệu</label>
+              <Textarea
+                placeholder="Thịt bò, bánh phở, hành lá..."
+                value={ingredient}
+                onChange={(e) => setIngredient(e.target.value)}
+              />
             </div>
 
             {/* Mô tả */}
