@@ -33,7 +33,7 @@ export default function SearchClient() {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/search?q=${encodeURIComponent(q)}`
+          `${process.env.NEXT_PUBLIC_API_URL}/search?q=${encodeURIComponent(q)}`
         );
         const data = await res.json();
         if (data.success) {
