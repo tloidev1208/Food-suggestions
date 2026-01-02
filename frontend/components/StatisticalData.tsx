@@ -78,14 +78,14 @@ const StatisticalData = () => {
           />
 
           <StatCard
-            title="Món ăn"
+            title="Món ăn do AI tạo"
             value={data?.recipes ?? 0}
             icon={<UtensilsCrossed className="w-8 h-8 text-green-600" />}
             bg="bg-green-50"
           />
 
           <StatCard
-            title="Bài viết người dùng"
+            title="Món ăn do người dùng đóng góp"
             value={data?.userPosts ?? 0}
             icon={<FileText className="w-8 h-8 text-purple-600" />}
             bg="bg-purple-50"
