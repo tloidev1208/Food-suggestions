@@ -48,9 +48,9 @@ export default function FoodDetailPage() {
     let apiUrl = "";
 
     if (type === "post") {
-      apiUrl = `https://befoodsuggestion-production.up.railway.app/api/posts/food/${id}`;
+      apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/posts/food/${id}`;
     } else {
-      apiUrl = `https://befoodsuggestion-production.up.railway.app/api/recipes/${id}`;
+      apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/recipes/${id}`;
     }
 
     fetch(apiUrl)
